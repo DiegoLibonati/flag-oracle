@@ -12,7 +12,7 @@ services:
     depends_on:
       - flags-server
     ports:
-      - "5173:5173"
+      - "3000:3000"
     networks:
      - flags-net
     tty: true

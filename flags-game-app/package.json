@@ -52,7 +52,7 @@
     "test:watch": "jest --watchAll --verbose",
     "test:coverage": "jest --coverage",
     "doctor": "npx react-doctor@latest .",
-    "prepare": "husky"
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
