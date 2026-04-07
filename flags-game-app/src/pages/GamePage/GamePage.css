@@ -36,7 +36,7 @@
 .game-page__title {
   font-size: 5rem;
   text-align: center;
-  color: var(--white-color);
+  color: var(--color-white);
 }
 
 .game-page__stats {
@@ -51,8 +51,8 @@
 .game-page__timeleft {
   text-align: center;
   font-size: 2rem;
-  background-color: rgba(var(--black-int-color), 0.5);
-  color: var(--white-color);
+  background-color: rgba(var(--color-black-rgb), 0.5);
+  color: var(--color-white);
   padding: 1rem;
   margin: 1rem;
 }

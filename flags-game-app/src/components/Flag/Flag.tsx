@@ -1,7 +1,11 @@
-import { FlagProps } from "@src/entities/props";
+import type { FlagProps } from "@/types/props";
 
-import "@src/components/Flag/Flag.css";
+import type { JSX } from "react";
 
-export const Flag = ({ image, name }: FlagProps): JSX.Element => {
+import "@/components/Flag/Flag.css";
+
+const Flag = ({ image, name }: FlagProps): JSX.Element => {
   return <img src={image} alt={name} className="flag"></img>;
 };
+
+export default Flag;

@@ -6,7 +6,7 @@
   position: fixed;
   width: 100%;
   height: 5rem;
-  background-color: rgba(var(--black-int-color), 0.5);
+  background-color: rgba(var(--color-black-rgb), 0.5);
   z-index: 99999;
 }
 
@@ -23,7 +23,7 @@
 .header__title {
   text-decoration: none;
   font-size: 2rem;
-  color: var(--white-color);
+  color: var(--color-white);
 }
 
 .header__nav {
@@ -35,7 +35,7 @@
   max-height: 0;
   transition: max-height 1s;
   overflow: hidden;
-  background-color: rgba(var(--black-int-color), 0.5);
+  background-color: rgba(var(--color-black-rgb), 0.5);
 }
 
 .header__nav--open {
@@ -60,12 +60,12 @@
 
 .header__nav-link {
   font-size: 1.5rem;
-  color: var(--white-color);
+  color: var(--color-white);
   text-decoration: none;
 }
 
 .header__nav-link--active {
-  color: var(--active-color);
+  color: var(--color-active);
 }
 
 @media only screen and (min-width: 1024px) {

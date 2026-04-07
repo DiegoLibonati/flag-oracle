@@ -1,16 +1,16 @@
-import { HamburgerProps } from "@src/entities/props";
+import type { JSX } from "react";
+import type { HamburgerProps } from "@/types/props";
 
-import "@src/components/Hamburger/Hamburger.css";
+import "@/components/Hamburger/Hamburger.css";
 
-export const Hamburger = ({
-  navbar,
-  manageNavbar,
-}: HamburgerProps): JSX.Element => {
+const Hamburger = ({ navbar, manageNavbar }: HamburgerProps): JSX.Element => {
   return (
     <button
       className={navbar ? "hamburger hamburger--open" : "hamburger"}
       aria-label="Main Menu"
-      onClick={() => manageNavbar()}
+      onClick={() => {
+        manageNavbar();
+      }}
     >
       <svg width="30" height="30" viewBox="0 0 100 100">
         <path
@@ -26,3 +26,5 @@ export const Hamburger = ({
     </button>
   );
 };
+
+export default Hamburger;

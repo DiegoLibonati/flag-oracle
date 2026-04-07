@@ -1,16 +1,18 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useForm } from "@src/hooks/useForm";
+import type { JSX } from "react";
 
-import { useGameContext } from "@src/hooks/useGameContext";
-import { useAlertContext } from "@src/hooks/useAlertContext";
+import { useForm } from "@/hooks/useForm";
+import { useGameContext } from "@/hooks/useGameContext";
+import { useAlertContext } from "@/hooks/useAlertContext";
 
-import "@src/components/Forms/FormUpdateUser/FormUpdateUser.css";
-import { patchUser } from "@src/api/patch/patchUser";
+import userService from "@/services/userService";
 
-export const FormUpdateUser = (): JSX.Element => {
-  const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+import "@/components/Forms/FormUpdateUser/FormUpdateUser.css";
+
+const FormUpdateUser = (): JSX.Element => {
+  const redirectTimeoutRef = useRef<number | null>(null);
 
   const { idMode } = useParams();
   const navigate = useNavigate();
@@ -18,17 +20,12 @@ export const FormUpdateUser = (): JSX.Element => {
   const { score } = useGameContext();
   const { alert, handleSetAlert } = useAlertContext();
 
-  const { formState, onInputChange, onResetForm } = useForm<{
-    username: string;
-    password: string;
-  }>({
+  const { formState, onInputChange, onResetForm } = useForm({
     username: "",
     password: "",
   });
 
-  const onSendRequest = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const onSendRequest = async (e: React.SubmitEvent<HTMLFormElement>): Promise<void> => {
     try {
       e.preventDefault();
 
@@ -39,7 +36,7 @@ export const FormUpdateUser = (): JSX.Element => {
         mode_id: idMode!,
       };
 
-      const result = await patchUser(body);
+      const result = await userService.updateByUsername(body);
 
       const { message } = result;
 
@@ -47,25 +44,30 @@ export const FormUpdateUser = (): JSX.Element => {
       onResetForm();
 
       redirectTimeoutRef.current = setTimeout(() => {
-        navigate("/");
+        void navigate("/");
       }, 2000);
     } catch (e) {
       handleSetAlert({
         type: "alert-auth-error",
-        message: e,
+        message: String(e),
       });
       onResetForm();
     }
   };
 
   useEffect(() => {
-    return () => {
+    return (): void => {
       if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current);
     };
   }, []);
 
   return (
-    <form className="form-update-user" onSubmit={(e) => onSendRequest(e)}>
+    <form
+      className="form-update-user"
+      onSubmit={(e) => {
+        void onSendRequest(e);
+      }}
+    >
       <h3 className="form-update-user__score">Your score was: {score} PTS</h3>
       <input
         type="text"
@@ -73,7 +75,9 @@ export const FormUpdateUser = (): JSX.Element => {
         value={formState.username}
         name="username"
         className="form-update-user__input"
-        onChange={(e) => onInputChange(e)}
+        onChange={(e) => {
+          onInputChange(e);
+        }}
       ></input>
       <input
         type="password"
@@ -81,19 +85,20 @@ export const FormUpdateUser = (): JSX.Element => {
         value={formState.password}
         name="password"
         className="form-update-user__input"
-        onChange={(e) => onInputChange(e)}
+        onChange={(e) => {
+          onInputChange(e);
+        }}
       ></input>
       <button
         type="submit"
         aria-label="send and replace"
         className="form-update-user__submit"
-        disabled={
-          alert.type === "alert-auth-error" ||
-          alert.type === "alert-auth-success"
-        }
+        disabled={alert.type === "alert-auth-error" || alert.type === "alert-auth-success"}
       >
         Send and replace
       </button>
     </form>
   );
 };
+
+export default FormUpdateUser;

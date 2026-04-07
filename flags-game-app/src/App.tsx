@@ -1,17 +1,21 @@
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 
-import { AppRouter } from "@src/router/AppRouter";
+import type { JSX } from "react";
+
+import { FlagsGameRouter } from "@/router/FlagsGameRouter";
+
+import { AlertProvider } from "@/contexts/AlertContext/AlertProvider";
+import { UiProvider } from "@/contexts/UiContext/UiProvider";
 
 function App(): JSX.Element {
   return (
-    <BrowserRouter
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
-      <AppRouter></AppRouter>
-    </BrowserRouter>
+    <HashRouter>
+      <AlertProvider>
+        <UiProvider>
+          <FlagsGameRouter></FlagsGameRouter>
+        </UiProvider>
+      </AlertProvider>
+    </HashRouter>
   );
 }
 

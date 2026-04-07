@@ -1,10 +1,11 @@
 import { Link, useParams } from "react-router-dom";
-
 import { BsChevronLeft } from "react-icons/bs";
 
-import "@src/pages/StartGamePage/StartGamePage.css";
+import type { JSX } from "react";
 
-export const StartGamePage = (): JSX.Element => {
+import "@/pages/StartGamePage/StartGamePage.css";
+
+const StartGamePage = (): JSX.Element => {
   const { idMode } = useParams();
 
   return (
@@ -25,3 +26,5 @@ export const StartGamePage = (): JSX.Element => {
     </main>
   );
 };
+
+export default StartGamePage;

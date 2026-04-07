@@ -12,9 +12,9 @@
   width: 100%;
   font-size: 1.5rem;
   outline: none;
-  border: 0.1rem solid var(--white-color);
-  background-color: rgba(var(--black-int-color), 0.5);
-  color: var(--white-color);
+  border: 0.1rem solid var(--color-white);
+  background-color: rgba(var(--color-black-rgb), 0.5);
+  color: var(--color-white);
 }
 
 .form-guess-flag__submit {
@@ -22,8 +22,8 @@
   font-size: 2rem;
   margin-top: 1rem;
   border: none;
-  background-color: rgba(var(--black-int-color), 0.5);
-  color: var(--white-color);
+  background-color: rgba(var(--color-black-rgb), 0.5);
+  color: var(--color-white);
   cursor: pointer;
 }
 

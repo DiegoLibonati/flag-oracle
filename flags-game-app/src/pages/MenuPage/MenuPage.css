@@ -28,7 +28,7 @@
   text-align: center;
   margin-bottom: 5rem;
   margin-top: 5rem;
-  color: var(--white-color);
+  color: var(--color-white);
 }
 
 .menu-page__modes {
@@ -43,8 +43,8 @@
 .menu-page__mode {
   font-size: 2rem;
   text-decoration: none;
-  background-color: rgba(var(--black-int-color), 0.5);
-  color: var(--white-color);
+  background-color: rgba(var(--color-black-rgb), 0.5);
+  color: var(--color-white);
   padding: 1rem;
   margin: 1rem;
 }

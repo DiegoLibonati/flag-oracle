@@ -1,5 +1,9 @@
-import "@src/components/Loader/Loader.css";
+import type { JSX } from "react";
 
-export const Loader = (): JSX.Element => {
+import "@/components/Loader/Loader.css";
+
+const Loader = (): JSX.Element => {
   return <span className="loader"></span>;
 };
+
+export default Loader;

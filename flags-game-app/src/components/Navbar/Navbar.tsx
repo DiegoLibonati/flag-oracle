@@ -1,12 +1,14 @@
 import { Link, NavLink } from "react-router-dom";
 
-import { Hamburger } from "@src/components/Hamburger/Hamburger";
+import type { JSX } from "react";
 
-import { useUiContext } from "@src/hooks/useUiContext";
+import Hamburger from "@/components/Hamburger/Hamburger";
 
-import "@src/components/Navbar/Navbar.css";
+import { useUiContext } from "@/hooks/useUiContext";
 
-export const Navbar = (): JSX.Element => {
+import "@/components/Navbar/Navbar.css";
+
+const Navbar = (): JSX.Element => {
   const { navbar, handleManageNavbar } = useUiContext();
 
   return (
@@ -16,10 +18,7 @@ export const Navbar = (): JSX.Element => {
           FlagsGame
         </Link>
 
-        <Hamburger
-          navbar={navbar}
-          manageNavbar={handleManageNavbar}
-        ></Hamburger>
+        <Hamburger navbar={navbar} manageNavbar={handleManageNavbar}></Hamburger>
       </div>
 
       <nav className={navbar ? "header__nav header__nav--open" : "header__nav"}>
@@ -29,9 +28,7 @@ export const Navbar = (): JSX.Element => {
               to="/"
               aria-label="home"
               className={({ isActive }) =>
-                isActive
-                  ? "header__nav-link header__nav-link--active"
-                  : "header__nav-link"
+                isActive ? "header__nav-link header__nav-link--active" : "header__nav-link"
               }
             >
               Home
@@ -42,9 +39,7 @@ export const Navbar = (): JSX.Element => {
               to="/menu"
               aria-label="menu"
               className={({ isActive }) =>
-                isActive
-                  ? "header__nav-link header__nav-link--active"
-                  : "header__nav-link"
+                isActive ? "header__nav-link header__nav-link--active" : "header__nav-link"
               }
             >
               Menu
@@ -55,3 +50,5 @@ export const Navbar = (): JSX.Element => {
     </header>
   );
 };
+
+export default Navbar;

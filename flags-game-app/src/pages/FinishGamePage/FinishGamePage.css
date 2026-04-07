@@ -38,7 +38,7 @@
   font-size: 3rem;
   margin-bottom: 2rem;
   text-align: center;
-  color: var(--white-color);
+  color: var(--color-white);
 }
 
 .alert {
@@ -49,10 +49,10 @@
 .alert--error {
   position: fixed;
   bottom: 0;
-  background-color: rgb(255, 0, 0);
+  background-color: var(--color-red);
   padding: 1rem;
   font-size: 2rem;
-  color: var(--white-color);
+  color: var(--color-white);
   text-align: center;
   width: 100%;
 }
@@ -60,10 +60,10 @@
 .alert--success {
   position: fixed;
   bottom: 0;
-  background-color: rgb(0, 255, 55);
+  background-color: var(--color-green);
   padding: 1rem;
   font-size: 2rem;
-  color: var(--white-color);
+  color: var(--color-white);
   text-align: center;
   width: 100%;
 }

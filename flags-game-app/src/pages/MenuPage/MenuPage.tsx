@@ -2,15 +2,17 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BsChevronLeft } from "react-icons/bs";
 
-import { Loader } from "@src/components/Loader/Loader";
+import type { JSX } from "react";
 
-import { useModesContext } from "@src/hooks/useModesContext";
+import Loader from "@/components/Loader/Loader";
 
-import { getModes } from "@src/api/get/getModes";
+import { useModesContext } from "@/hooks/useModesContext";
 
-import "@src/pages/MenuPage/MenuPage.css";
+import modeService from "@/services/modeService";
 
-export const MenuPage = (): JSX.Element => {
+import "@/pages/MenuPage/MenuPage.css";
+
+const MenuPage = (): JSX.Element => {
   const {
     modes,
     handleStartFetchModes,
@@ -18,12 +20,12 @@ export const MenuPage = (): JSX.Element => {
     handleSetErrorModes,
     handleEndFetchModes,
     handleClearModes,
-  } = useModesContext()!;
+  } = useModesContext();
 
-  const handleGetModes = async () => {
+  const handleGetModes = async (): Promise<void> => {
     try {
       handleStartFetchModes();
-      const response = await getModes();
+      const response = await modeService.getAll();
       handleSetModes(response.data);
     } catch (error) {
       handleSetErrorModes(String(error));
@@ -33,9 +35,9 @@ export const MenuPage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    handleGetModes();
+    void handleGetModes();
 
-    return () => {
+    return (): void => {
       handleClearModes();
     };
   }, []);
@@ -56,7 +58,7 @@ export const MenuPage = (): JSX.Element => {
       <section className="menu-page">
         <h1 className="menu-page__title">Choose a MODE</h1>
         <article className="menu-page__modes">
-          {modes.modes!.map((mode) => {
+          {modes.modes.map((mode) => {
             return (
               <Link
                 key={mode._id}
@@ -73,3 +75,5 @@ export const MenuPage = (): JSX.Element => {
     </main>
   );
 };
+
+export default MenuPage;

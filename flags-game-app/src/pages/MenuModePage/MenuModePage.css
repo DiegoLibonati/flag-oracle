@@ -24,7 +24,7 @@
   font-size: 5rem;
   margin-top: 5rem;
   text-align: center;
-  color: var(--white-color);
+  color: var(--color-white);
 }
 
 .menu-mode-page__explication {
@@ -35,13 +35,13 @@
   width: 100%;
   height: auto;
   padding: 1rem;
-  background-color: rgba(var(--black-int-color), 0.5);
+  background-color: rgba(var(--color-black-rgb), 0.5);
   margin-top: 3rem;
 }
 
 .menu-mode-page__description {
   font-size: 1.5rem;
-  color: var(--white-color);
+  color: var(--color-white);
   text-align: justify;
 }
 
@@ -52,7 +52,7 @@
   font-weight: 900;
   margin-top: 2rem;
   border: none;
-  color: var(--white-color);
+  color: var(--color-white);
   letter-spacing: 0.2rem;
 }
 

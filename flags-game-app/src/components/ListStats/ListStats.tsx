@@ -1,11 +1,9 @@
-import { ListStatsProps } from "@src/entities/props";
+import type { JSX } from "react";
+import type { ListStatsProps } from "@/types/props";
 
-import "@src/components/ListStats/ListStats.css";
+import "@/components/ListStats/ListStats.css";
 
-export const ListStats = ({
-  nameTop,
-  arrayTop,
-}: ListStatsProps): JSX.Element => {
+const ListStats = ({ nameTop, arrayTop }: ListStatsProps): JSX.Element => {
   return (
     <article className="list-stats">
       <h2 className="list-stats__title">{nameTop}</h2>
@@ -24,3 +22,5 @@ export const ListStats = ({
     </article>
   );
 };
+
+export default ListStats;

@@ -5,14 +5,14 @@
   flex-flow: column wrap;
   width: 100%;
   height: auto;
-  background-color: rgba(var(--black-int-color), 0.5);
+  background-color: rgba(var(--color-black-rgb), 0.5);
   padding: 1rem;
 }
 
 .form-register-user__score {
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: var(--white-color);
+  color: var(--color-white);
 }
 
 .form-register-user__input {
@@ -24,12 +24,12 @@
   font-weight: 900;
   outline: none;
   background-color: transparent;
-  border: 0.1rem solid var(--white-color);
-  color: var(--white-color);
+  border: 0.1rem solid var(--color-white);
+  color: var(--color-white);
 }
 
 .form-register-user__input::placeholder {
-  color: var(--white-color);
+  color: var(--color-white);
 }
 
 .form-register-user__submit {
@@ -39,7 +39,7 @@
   font-weight: 900;
   cursor: pointer;
   background-color: transparent;
-  color: var(--white-color);
+  color: var(--color-white);
   cursor: pointer;
   font-size: 2rem;
   letter-spacing: 0.1rem;

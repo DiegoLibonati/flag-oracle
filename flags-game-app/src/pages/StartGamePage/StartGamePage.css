@@ -21,8 +21,8 @@
   width: 15rem;
   padding: 1rem;
   font-size: 2rem;
-  background-color: rgba(var(--black-int-color), 0.5);
-  color: var(--white-color);
+  background-color: rgba(var(--color-black-rgb), 0.5);
+  color: var(--color-white);
   cursor: pointer;
   border: none;
   text-align: center;

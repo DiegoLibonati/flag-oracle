@@ -1,4 +1,4 @@
-import { AlertType } from "@src/entities/app";
+import type { AlertType } from "@/types/app";
 
 export const parseAlertType = (type: AlertType): string => {
   const alertTypes: Record<AlertType, string> = {

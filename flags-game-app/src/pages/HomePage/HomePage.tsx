@@ -1,16 +1,18 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import { ListStats } from "@src/components/ListStats/ListStats";
-import { Loader } from "@src/components/Loader/Loader";
+import type { JSX } from "react";
 
-import { useUsersContext } from "@src/hooks/useUsersContext";
+import ListStats from "@/components/ListStats/ListStats";
+import Loader from "@/components/Loader/Loader";
 
-import { getTopGeneral } from "@src/api/get/getTopGeneral";
+import { useUsersContext } from "@/hooks/useUsersContext";
 
-import "@src/pages/HomePage/HomePage.css";
+import userService from "@/services/userService";
 
-export const HomePage = (): JSX.Element => {
+import "@/pages/HomePage/HomePage.css";
+
+const HomePage = (): JSX.Element => {
   const {
     topUsers,
     handleStartFetchUsers,
@@ -20,10 +22,10 @@ export const HomePage = (): JSX.Element => {
     handleClearTopUsers,
   } = useUsersContext();
 
-  const handleGetGeneralTopUsers = async () => {
+  const handleGetGeneralTopUsers = async (): Promise<void> => {
     try {
       handleStartFetchUsers();
-      const response = await getTopGeneral();
+      const response = await userService.getTopGeneral();
       handleSetTopUsers(response.data);
     } catch (error) {
       handleSetErrorUsers(String(error));
@@ -33,9 +35,9 @@ export const HomePage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    handleGetGeneralTopUsers();
+    void handleGetGeneralTopUsers();
 
-    return () => {
+    return (): void => {
       handleClearTopUsers();
     };
   }, []);
@@ -52,12 +54,11 @@ export const HomePage = (): JSX.Element => {
         {topUsers.loading ? (
           <Loader></Loader>
         ) : (
-          <ListStats
-            nameTop={"GLOBAL TOP USERS"}
-            arrayTop={topUsers.users!}
-          ></ListStats>
+          <ListStats nameTop={"GLOBAL TOP USERS"} arrayTop={topUsers.users}></ListStats>
         )}
       </section>
     </main>
   );
 };
+
+export default HomePage;

@@ -22,22 +22,13 @@ NOTE: Install **pre-commit** inside: `flags-server` folder.
 1. Once you're inside the virtual environment, let's install the hooks specified in the pre-commit. Execute: `pre-commit install`
 2. Now every time you try to commit, the pre-commit lint will run. If you want to do it manually, you can run the command: `pre-commit run --all-files`
 
-## Security Audit (Python)
-
-You can check your dependencies for known vulnerabilities using **pip-audit**.
-
-1. Go to the repository folder
-2. Activate your virtual environment
-3. Execute: `pip install -r requirements.dev.txt`
-4. Execute: `pip-audit -r requirements.txt`
-
 ## Description
 
 I made a web application with React JS and Flask for the api-rest, I used mongodb to save the information. In this web application you can play guess the flag, there are a total of 3 game modes among them we have normal, hard and hardcore mode. In each of them will appear 5 flags and depending on the game mode will have more or less time. In game modes with a higher difficulty the points multiplier will be higher, because every time you guess a flag you add points. In each game mode there is a ranking and there is also a global ranking of players that is governed by the amount of points they score.
 
 ## Technologies used
 
-1. React
+1. React JS
 2. Typescript
 3. CSS3
 4. HTML5
@@ -64,33 +55,39 @@ Database:
 #### Dependencies
 
 ```
-"react": "^18.2.0",
-"react-dom": "^18.2.0",
-"react-icons": "^4.4.0",
-"react-router-dom": "^6.3.0",
-"web-vitals": "^2.1.4"
+"react": "^19.2.4"
+"react-dom": "^19.2.4"
+"react-router-dom": "7.13.2"
+"react-icons": "^4.4.0"
 ```
 
 #### devDependencies
 
 ```
+"@eslint/js": "^9.0.0"
 "@testing-library/dom": "^10.4.0"
-"@testing-library/jest-dom": "^6.6.2"
+"@testing-library/jest-dom": "^6.6.3"
 "@testing-library/react": "^16.0.1"
 "@testing-library/user-event": "^14.5.2"
-"@types/jest": "^29.5.13"
-"@types/node": "^20.10.6"
-"@types/react": "^18.3.11"
-"@types/react-dom": "^18.3.1"
+"@types/jest": "^30.0.0"
+"@types/react": "^19.2.14"
+"@types/react-dom": "^19.2.3"
 "@vitejs/plugin-react": "^5.0.2"
-"jest": "^29.7.0"
-"jest-environment-jsdom": "^29.7.0"
-"jest-fixed-jsdom": "^0.0.9"
-"msw": "^2.6.0"
-"ts-jest": "^29.2.5"
-"ts-node": "^10.9.2"
-"typescript": "^4.9.5"
-"vite": "^7.1.7"
+"eslint": "^9.0.0"
+"eslint-config-prettier": "^9.0.0"
+"eslint-plugin-prettier": "^5.5.5"
+"eslint-plugin-react-hooks": "^5.0.0"
+"eslint-plugin-react-refresh": "^0.4.0"
+"globals": "^15.0.0"
+"husky": "^9.0.0"
+"jest": "^30.3.0"
+"jest-environment-jsdom": "^30.3.0"
+"lint-staged": "^15.0.0"
+"prettier": "^3.0.0"
+"ts-jest": "^29.4.6"
+"typescript": "^5.2.2"
+"typescript-eslint": "^8.0.0"
+"vite": "^7.1.6"
 ```
 
 ### Backend
@@ -135,8 +132,14 @@ https://user-images.githubusercontent.com/99032604/199865818-646e2a21-c6a4-42d6-
 
 ### Frontend
 
-1. Join to `flags-game-app` folder
-2. Execute: `yarn test` or `npm test`
+1. Navigate to the project folder
+2. Execute: `npm test`
+
+For coverage report:
+
+```bash
+npm run test:coverage
+```
 
 ### Backend
 
@@ -146,6 +149,41 @@ https://user-images.githubusercontent.com/99032604/199865818-646e2a21-c6a4-42d6-
 4. Execute: `pip install -r requirements.txt`
 5. Execute: `pip install -r requirements.test.txt`
 6. Execute: `pytest --log-cli-level=INFO`
+
+## Security Audit (Python)
+
+You can check your dependencies for known vulnerabilities using **pip-audit**.
+
+1. Go to the repository folder
+2. Activate your virtual environment
+3. Execute: `pip install -r requirements.dev.txt`
+4. Execute: `pip-audit -r requirements.txt`
+
+## Security Audit (Frontend)
+
+### npm audit
+
+Check for vulnerabilities in dependencies:
+
+```bash
+npm audit
+```
+
+### React Doctor (Frontend)
+
+Run a health check on the project (security, performance, dead code, architecture):
+
+```bash
+npm run doctor
+```
+
+Use `--verbose` to see specific files and line numbers:
+
+```bash
+npm run doctor -- --verbose
+```
+
+## Documentation API
 
 ### **Version**
 
@@ -204,7 +242,7 @@ PORT=5050
 - **Endpoint Method**: GET
 - **Endpoint Prefix**: /api/v1/flags/random/:quantity
 - **Endpoint Fn**: This endpoint obtains random flags by quantity
-- **Endpoint Params**: 
+- **Endpoint Params**:
 
 ```ts
 {
@@ -222,8 +260,8 @@ PORT=5050
 
 ```ts
 {
-    name: string;
-    image: string;
+  name: string;
+  image: string;
 }
 ```
 
@@ -233,7 +271,7 @@ PORT=5050
 - **Endpoint Method**: DELETE
 - **Endpoint Prefix**: /api/v1/flags/:id
 - **Endpoint Fn**: This endpoint deletes a Flag by id
-- **Endpoint Params**: 
+- **Endpoint Params**:
 
 ```ts
 {
@@ -255,7 +293,7 @@ PORT=5050
 - **Endpoint Method**: GET
 - **Endpoint Prefix**: /api/v1/modes/:idMode
 - **Endpoint Fn**: This endpoint obtains a mode by id
-- **Endpoint Params**: 
+- **Endpoint Params**:
 
 ```ts
 {
@@ -273,10 +311,10 @@ PORT=5050
 
 ```ts
 {
-    name: string;
-    description: string;
-    timeleft: number;
-    multiplier: number;
+  name: string;
+  description: string;
+  timeleft: number;
+  multiplier: number;
 }
 ```
 
@@ -286,7 +324,7 @@ PORT=5050
 - **Endpoint Method**: GET
 - **Endpoint Prefix**: /api/v1/modes/:idMode
 - **Endpoint Fn**: This endpoint obtains the top ten of the mode by id
-- **Endpoint Params**: 
+- **Endpoint Params**:
 
 ```ts
 {
@@ -300,7 +338,7 @@ PORT=5050
 - **Endpoint Method**: DELETE
 - **Endpoint Prefix**: /api/v1/modes/:id
 - **Endpoint Fn**: This endpoint deletes a Mode by id
-- **Endpoint Params**: 
+- **Endpoint Params**:
 
 ```ts
 {
@@ -318,10 +356,10 @@ PORT=5050
 
 ```ts
 {
-    username: string;
-    password: string;
-    score: number;
-    mode_id: string;
+  username: string;
+  password: string;
+  score: number;
+  mode_id: string;
 }
 ```
 
@@ -335,10 +373,10 @@ PORT=5050
 
 ```ts
 {
-    username: string;
-    password: string;
-    score: number;
-    mode_id: string;
+  username: string;
+  password: string;
+  score: number;
+  mode_id: string;
 }
 ```
 
@@ -356,7 +394,7 @@ PORT=5050
 - **Endpoint Method**: DELETE
 - **Endpoint Prefix**: /api/v1/users/:id
 - **Endpoint Fn**: This endpoint deletes a User by id
-- **Endpoint Params**: 
+- **Endpoint Params**:
 
 ```ts
 {
@@ -369,4 +407,3 @@ PORT=5050
 ## Known Issues
 
 None at the moment.
-

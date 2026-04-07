@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { UseForm } from "@src/entities/hooks";
+import type { UseForm } from "@/types/hooks";
 
 export const useForm = <T,>(initialForm: T): UseForm<T> => {
   const [formState, setformState] = useState(initialForm);

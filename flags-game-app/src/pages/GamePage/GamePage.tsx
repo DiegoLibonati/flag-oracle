@@ -1,21 +1,23 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Loader } from "@src/components/Loader/Loader";
-import { Flag as FlagComponent } from "@src/components/Flag/Flag";
-import { FormGuessFlag } from "@src/components/Forms/FormGuessFlag/FormGuessFlag";
+import type { JSX } from "react";
 
-import { useCountdown } from "@src/hooks/useCountdown";
-import { useFlagsContext } from "@src/hooks/useFlagsContext";
-import { useModeContext } from "@src/hooks/useModeContext";
-import { useGameContext } from "@src/hooks/useGameContext";
+import Loader from "@/components/Loader/Loader";
+import FlagComponent from "@/components/Flag/Flag";
+import FormGuessFlag from "@/components/Forms/FormGuessFlag/FormGuessFlag";
 
-import { getRandomFlags } from "@src/api/get/getRandomFlags";
-import { getMode } from "@src/api/get/getMode";
+import { useCountdown } from "@/hooks/useCountdown";
+import { useFlagsContext } from "@/hooks/useFlagsContext";
+import { useModeContext } from "@/hooks/useModeContext";
+import { useGameContext } from "@/hooks/useGameContext";
 
-import "@src/pages/GamePage/GamePage.css";
+import flagService from "@/services/flagService";
+import modeService from "@/services/modeService";
 
-export const GamePage = (): JSX.Element => {
+import "@/pages/GamePage/GamePage.css";
+
+const GamePage = (): JSX.Element => {
   const { idMode } = useParams();
   const navigate = useNavigate();
 
@@ -35,17 +37,14 @@ export const GamePage = (): JSX.Element => {
     handleSetMode,
     handleStartFetchMode,
   } = useModeContext();
-  const { completeGuess, currentFlagToGuess, score, handleSetFlagToGuess } =
-    useGameContext();
+  const { completeGuess, currentFlagToGuess, score, handleSetFlagToGuess } = useGameContext();
 
-  const { timerText, secondsLeft, endTime, onCountdownReset } = useCountdown(
-    mode.mode! && mode.mode?.timeleft
-  );
+  const { timerText, secondsLeft, endTime, onCountdownReset } = useCountdown(mode.mode?.timeleft);
 
-  const handleGetRandomFlags = async () => {
+  const handleGetRandomFlags = async (): Promise<void> => {
     try {
       handleStartFetchFlags();
-      const response = await getRandomFlags(5);
+      const response = await flagService.getRandoms(5);
       handleSetFlags(response.data);
     } catch (error) {
       handleSetErrorFlags(String(error));
@@ -54,10 +53,10 @@ export const GamePage = (): JSX.Element => {
     }
   };
 
-  const handleGetMode = async () => {
+  const handleGetMode = async (): Promise<void> => {
     try {
       handleStartFetchMode();
-      const response = await getMode(idMode!);
+      const response = await modeService.getById(idMode!);
       handleSetMode(response.data);
     } catch (error) {
       handleSetErrorMode(String(error));
@@ -67,10 +66,10 @@ export const GamePage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    handleGetRandomFlags();
-    handleGetMode();
+    void handleGetRandomFlags();
+    void handleGetMode();
 
-    return () => {
+    return (): void => {
       onCountdownReset();
       handleClearFlags();
       handleClearMode();
@@ -78,14 +77,13 @@ export const GamePage = (): JSX.Element => {
   }, []);
 
   useEffect(() => {
-    if (endTime || completeGuess)
-      navigate(`/menu/${mode.mode?._id}/finishgame`);
+    if (endTime || completeGuess) void navigate(`/menu/${mode.mode?._id}/finishgame`);
   }, [endTime, completeGuess]);
 
   useEffect(() => {
-    if (!flags.flags || flags.flags.length === 0 || currentFlagToGuess) return;
+    if (flags.flags.length === 0 || currentFlagToGuess) return;
 
-    handleSetFlagToGuess(flags.flags[0]);
+    handleSetFlagToGuess(flags.flags[0]!);
   }, [flags.flags]);
 
   if (flags.loading || !currentFlagToGuess) {
@@ -102,9 +100,9 @@ export const GamePage = (): JSX.Element => {
         <article className="game-page__header">
           <h1 className="game-page__title">GUESS THE FLAG</h1>
           <FlagComponent
-            key={currentFlagToGuess!._id}
-            image={currentFlagToGuess?.image!}
-            name={currentFlagToGuess?.name!}
+            key={currentFlagToGuess._id}
+            image={currentFlagToGuess.image}
+            name={currentFlagToGuess.name}
           ></FlagComponent>
         </article>
 
@@ -119,3 +117,5 @@ export const GamePage = (): JSX.Element => {
     </main>
   );
 };
+
+export default GamePage;

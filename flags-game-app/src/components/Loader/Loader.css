@@ -14,14 +14,12 @@
   width: 4.8rem;
   height: 4.8rem;
   background-color: #645dd7;
-  background-image: radial-gradient(
-    circle 1.4rem,
-    var(--black-color) 100%,
-    transparent 0
-  );
+  background-image: radial-gradient(circle 1.4rem, var(--color-black) 100%, transparent 0);
   background-repeat: no-repeat;
   border-radius: 50%;
-  animation: eyeMove 10s infinite, blink 10s infinite;
+  animation:
+    eyeMove 10s infinite,
+    blink 10s infinite;
 }
 @keyframes eyeMove {
   0%,

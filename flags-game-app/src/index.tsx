@@ -1,19 +1,8 @@
 import ReactDOM from "react-dom/client";
 
-import App from "@src/App";
+import App from "@/App";
 
-import { AlertProvider } from "@src/contexts/AlertContext/AlertContext";
-import { UiProvider } from "@src/contexts/UiContext/UiContext";
+import "@/index.css";
 
-import "@src/index.css";
-
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
-  <AlertProvider>
-    <UiProvider>
-      <App />
-    </UiProvider>
-  </AlertProvider>
-);
+const root = ReactDOM.createRoot(document.getElementById("root")!);
+root.render(<App />);

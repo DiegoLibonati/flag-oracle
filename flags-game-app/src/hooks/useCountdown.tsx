@@ -1,19 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 
-import { UseCountdown } from "@src/entities/hooks";
+import type { UseCountdown } from "@/types/hooks";
 
-import { parseZero } from "@src/helpers/parseZero";
+import { parseZero } from "@/helpers/parseZero";
 
-export const useCountdown = (timeleft: number): UseCountdown => {
-  const [secondsLeft, setSecondsLeft] = useState<number>(-1);
-  const [timerText, setTimerText] = useState<string>("00:00:00");
-  const [endTime, setEndTime] = useState<boolean>(false);
+export const useCountdown = (timeleft: number | undefined): UseCountdown => {
+  const [secondsLeft, setSecondsLeft] = useState(-1);
+  const [timerText, setTimerText] = useState("00:00:00");
+  const [endTime, setEndTime] = useState(false);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<number | null>(null);
 
-  const restASecond = (seconds: number) => {
-    if (endTime) return;
-
+  const restASecond = (): (() => void) => {
     timerRef.current = setTimeout(() => {
       const newSecondsLeft = secondsLeft - 1;
       setSecondsLeft(newSecondsLeft);
@@ -22,10 +20,12 @@ export const useCountdown = (timeleft: number): UseCountdown => {
       if (!newSecondsLeft) setEndTime(true);
     }, 1000);
 
-    return () => clearTimeout(timerRef.current!);
+    return () => {
+      clearTimeout(timerRef.current!);
+    };
   };
 
-  const secondsToTimer = (seconds: number) => {
+  const secondsToTimer = (seconds: number): void => {
     const hours = parseZero(Math.floor(seconds / 3600));
     const minutes = parseZero(Math.floor((seconds % 3600) / 60));
     const secs = parseZero(seconds % 60);
@@ -34,7 +34,7 @@ export const useCountdown = (timeleft: number): UseCountdown => {
     setTimerText(`${hours}:${minutes}:${secs}`);
   };
 
-  const onCountdownReset = () => {
+  const onCountdownReset = (): void => {
     setTimerText("");
     clearTimeout(timerRef.current!);
     timerRef.current = null;
@@ -49,7 +49,7 @@ export const useCountdown = (timeleft: number): UseCountdown => {
   useEffect(() => {
     if (secondsLeft === -1) return;
 
-    restASecond(secondsLeft);
+    return restASecond();
   }, [secondsLeft]);
 
   return {

@@ -2,18 +2,19 @@ import { useEffect } from "react";
 import { BsChevronLeft } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 
-import { ListStats } from "@src/components/ListStats/ListStats";
-import { Loader } from "@src/components/Loader/Loader";
+import type { JSX } from "react";
 
-import { useUsersContext } from "@src/hooks/useUsersContext";
-import { useModeContext } from "@src/hooks/useModeContext";
+import ListStats from "@/components/ListStats/ListStats";
+import Loader from "@/components/Loader/Loader";
 
-import { getTopMode } from "@src/api/get/getTopMode";
-import { getMode } from "@src/api/get/getMode";
+import { useUsersContext } from "@/hooks/useUsersContext";
+import { useModeContext } from "@/hooks/useModeContext";
 
-import "@src/pages/MenuModePage/MenuModePage.css";
+import modeService from "@/services/modeService";
 
-export const MenuModePage = (): JSX.Element => {
+import "@/pages/MenuModePage/MenuModePage.css";
+
+const MenuModePage = (): JSX.Element => {
   const { idMode } = useParams();
 
   const {
@@ -33,10 +34,10 @@ export const MenuModePage = (): JSX.Element => {
     handleStartFetchMode,
   } = useModeContext();
 
-  const handleGetTopMode = async () => {
+  const handleGetTopMode = async (): Promise<void> => {
     try {
       handleStartFetchUsers();
-      const response = await getTopMode(idMode!);
+      const response = await modeService.getTopMode(idMode!);
       handleSetTopUsers(response.data);
     } catch (error) {
       handleSetErrorUsers(String(error));
@@ -45,10 +46,10 @@ export const MenuModePage = (): JSX.Element => {
     }
   };
 
-  const handleGetMode = async () => {
+  const handleGetMode = async (): Promise<void> => {
     try {
       handleStartFetchMode();
-      const response = await getMode(idMode!);
+      const response = await modeService.getById(idMode!);
       handleSetMode(response.data);
     } catch (error) {
       handleSetErrorMode(String(error));
@@ -58,10 +59,10 @@ export const MenuModePage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    handleGetTopMode();
-    handleGetMode();
+    void handleGetTopMode();
+    void handleGetMode();
 
-    return () => {
+    return (): void => {
       handleClearTopUsers();
       handleClearMode();
     };
@@ -85,9 +86,7 @@ export const MenuModePage = (): JSX.Element => {
         <h1 className="menu-mode-page__title">{mode.mode?.name} MODE</h1>
 
         <article className="menu-mode-page__explication">
-          <p className="menu-mode-page__description">
-            {mode.mode?.description}
-          </p>
+          <p className="menu-mode-page__description">{mode.mode?.description}</p>
 
           <Link
             to={`/menu/${mode.mode?._id}/start`}
@@ -103,10 +102,12 @@ export const MenuModePage = (): JSX.Element => {
         ) : (
           <ListStats
             nameTop={`${mode.mode?.name!.toUpperCase()} TOP USERS`}
-            arrayTop={topUsers.users!}
+            arrayTop={topUsers.users}
           ></ListStats>
         )}
       </section>
     </main>
   );
 };
+
+export default MenuModePage;
