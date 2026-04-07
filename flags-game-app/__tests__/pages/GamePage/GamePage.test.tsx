@@ -32,7 +32,6 @@ const mockHandleSetScore = jest.fn();
 const mockHandleNextFlagToGuess = jest.fn();
 const mockHandleSetFlagToGuess = jest.fn();
 const mockHandleClearCurrentFlagToGuess = jest.fn();
-const mockFetchJson = jest.fn();
 
 jest.mock("@/hooks/useCountdown");
 jest.mock("@/hooks/useFlagsContext");
@@ -43,7 +42,7 @@ const renderPage = (loading = false, currentFlagToGuess: Flag | null = mockFlag)
   const mockedFetch = fetch as jest.MockedFunction<typeof fetch>;
   mockedFetch.mockResolvedValue({
     ok: true,
-    json: mockFetchJson.mockResolvedValue({ message: "", code: "", data: [] }),
+    json: jest.fn().mockResolvedValue({ message: "", code: "", data: [] }),
   } as unknown as Response);
 
   (useCountdown as jest.Mock).mockReturnValue({

@@ -11,11 +11,10 @@ describe("flagService", () => {
 
   describe("getAll", () => {
     it("should call the correct endpoint and return data", async () => {
-      const mockFetchJson = jest.fn();
       const mockResponse = { message: "OK", code: "SUCCESS", data: [mockFlag] };
       mockedFetch.mockResolvedValueOnce({
         ok: true,
-        json: mockFetchJson.mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockResponse),
       } as unknown as Response);
 
       const result = await flagService.getAll();
@@ -39,11 +38,10 @@ describe("flagService", () => {
 
   describe("getRandoms", () => {
     it("should call the correct endpoint with the given quantity", async () => {
-      const mockFetchJson = jest.fn();
       const mockResponse = { message: "OK", code: "SUCCESS", data: [mockFlag] };
       mockedFetch.mockResolvedValueOnce({
         ok: true,
-        json: mockFetchJson.mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockResponse),
       } as unknown as Response);
 
       const result = await flagService.getRandoms(5);

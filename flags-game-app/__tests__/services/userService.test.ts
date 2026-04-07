@@ -11,11 +11,10 @@ describe("userService", () => {
 
   describe("getTopGeneral", () => {
     it("should call the correct endpoint and return top users", async () => {
-      const mockFetchJson = jest.fn();
       const mockResponse = { message: "OK", code: "SUCCESS", data: [mockUserTop] };
       mockedFetch.mockResolvedValueOnce({
         ok: true,
-        json: mockFetchJson.mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockResponse),
       } as unknown as Response);
 
       const result = await userService.getTopGeneral();
@@ -41,11 +40,10 @@ describe("userService", () => {
     const body = { username: "testuser", password: "secret", score: 100, mode_id: "mode1" };
 
     it("should POST to the correct endpoint and return the created user", async () => {
-      const mockFetchJson = jest.fn();
       const mockResponse = { message: "Created", code: "USER_CREATED", data: {} };
       mockedFetch.mockResolvedValueOnce({
         ok: true,
-        json: mockFetchJson.mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockResponse),
       } as unknown as Response);
 
       const result = await userService.add(body);
@@ -58,11 +56,10 @@ describe("userService", () => {
     });
 
     it("should throw with the server error message when the response is not ok", async () => {
-      const mockFetchJson = jest.fn();
       const errorBody = { code: "CONFLICT", message: "Username already exists" };
       mockedFetch.mockResolvedValueOnce({
         ok: false,
-        json: mockFetchJson.mockResolvedValue(errorBody),
+        json: jest.fn().mockResolvedValue(errorBody),
       } as unknown as Response);
 
       await expect(userService.add(body)).rejects.toThrow("Username already exists");
@@ -70,14 +67,13 @@ describe("userService", () => {
   });
 
   describe("updateByUsername", () => {
-    const mockFetchJson = jest.fn();
     const body = { username: "testuser", password: "secret", score: 200, mode_id: "mode1" };
 
     it("should PATCH to the correct endpoint and return the updated user", async () => {
       const mockResponse = { message: "Updated", code: "USER_UPDATED", data: {} };
       mockedFetch.mockResolvedValueOnce({
         ok: true,
-        json: mockFetchJson.mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockResponse),
       } as unknown as Response);
 
       const result = await userService.updateByUsername(body);
@@ -90,11 +86,10 @@ describe("userService", () => {
     });
 
     it("should throw with the server error message when the response is not ok", async () => {
-      const mockFetchJson = jest.fn();
       const errorBody = { code: "NOT_FOUND", message: "User not found" };
       mockedFetch.mockResolvedValueOnce({
         ok: false,
-        json: mockFetchJson.mockResolvedValue(errorBody),
+        json: jest.fn().mockResolvedValue(errorBody),
       } as unknown as Response);
 
       await expect(userService.updateByUsername(body)).rejects.toThrow("User not found");

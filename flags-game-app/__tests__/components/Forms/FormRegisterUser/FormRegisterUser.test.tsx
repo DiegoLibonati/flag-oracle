@@ -97,12 +97,10 @@ describe("FormRegisterUser", () => {
   });
 
   it("should call handleSetAlert with error on failed registration", async () => {
-    const mockFetchJson = jest.fn();
-
     const user = userEvent.setup();
     mockedFetch.mockResolvedValueOnce({
       ok: false,
-      json: mockFetchJson.mockResolvedValue({
+      json: jest.fn().mockResolvedValue({
         code: "CONFLICT",
         message: "Username already exists",
       }),

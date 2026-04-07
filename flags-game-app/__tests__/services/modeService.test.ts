@@ -12,11 +12,10 @@ describe("modeService", () => {
 
   describe("getAll", () => {
     it("should call the correct endpoint and return all modes", async () => {
-      const mockFetchJson = jest.fn();
       const mockResponse = { message: "OK", code: "SUCCESS", data: [mockMode] };
       mockedFetch.mockResolvedValueOnce({
         ok: true,
-        json: mockFetchJson.mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockResponse),
       } as unknown as Response);
 
       const result = await modeService.getAll();
@@ -40,11 +39,10 @@ describe("modeService", () => {
 
   describe("getById", () => {
     it("should call the correct endpoint with the given id", async () => {
-      const mockFetchJson = jest.fn();
       const mockResponse = { message: "OK", code: "SUCCESS", data: mockMode };
       mockedFetch.mockResolvedValueOnce({
         ok: true,
-        json: mockFetchJson.mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockResponse),
       } as unknown as Response);
 
       const result = await modeService.getById(mockMode._id);
@@ -68,11 +66,10 @@ describe("modeService", () => {
 
   describe("getTopMode", () => {
     it("should call the correct endpoint and return top users for the mode", async () => {
-      const mockFetchJson = jest.fn();
       const mockResponse = { message: "OK", code: "SUCCESS", data: [mockUserTop] };
       mockedFetch.mockResolvedValueOnce({
         ok: true,
-        json: mockFetchJson.mockResolvedValue(mockResponse),
+        json: jest.fn().mockResolvedValue(mockResponse),
       } as unknown as Response);
 
       const result = await modeService.getTopMode(mockMode._id);
