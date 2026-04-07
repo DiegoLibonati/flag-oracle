@@ -7,7 +7,8 @@ const Hamburger = ({ navbar, manageNavbar }: HamburgerProps): JSX.Element => {
   return (
     <button
       className={navbar ? "hamburger hamburger--open" : "hamburger"}
-      aria-label="Main Menu"
+      aria-label={navbar ? "Close main menu" : "Open main menu"}
+      aria-expanded={navbar}
       onClick={() => {
         manageNavbar();
       }}

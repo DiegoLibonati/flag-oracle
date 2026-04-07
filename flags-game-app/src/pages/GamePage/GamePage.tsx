@@ -109,9 +109,13 @@ const GamePage = (): JSX.Element => {
         <FormGuessFlag secondsLeft={secondsLeft}></FormGuessFlag>
 
         <article className="game-page__stats">
-          <h3 className="game-page__score">Score: {score} PTS</h3>
+          <h3 className="game-page__score" aria-live="polite">
+            Score: {score} PTS
+          </h3>
 
-          <h3 className="game-page__timeleft">Time left: {timerText}</h3>
+          <h3 className="game-page__timeleft" aria-live="polite">
+            Time left: {timerText}
+          </h3>
         </article>
       </section>
     </main>

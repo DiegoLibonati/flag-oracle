@@ -72,6 +72,7 @@ const FormUpdateUser = (): JSX.Element => {
       <input
         type="text"
         placeholder="Your username goes here"
+        aria-label="Username"
         value={formState.username}
         name="username"
         className="form-update-user__input"
@@ -82,6 +83,7 @@ const FormUpdateUser = (): JSX.Element => {
       <input
         type="password"
         placeholder="Your password goes here"
+        aria-label="Password"
         value={formState.password}
         name="password"
         className="form-update-user__input"
@@ -91,7 +93,7 @@ const FormUpdateUser = (): JSX.Element => {
       ></input>
       <button
         type="submit"
-        aria-label="send and replace"
+        aria-label="Update existing user"
         className="form-update-user__submit"
         disabled={alert.type === "alert-auth-error" || alert.type === "alert-auth-success"}
       >

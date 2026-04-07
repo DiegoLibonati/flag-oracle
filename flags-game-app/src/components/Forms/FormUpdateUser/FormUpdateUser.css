@@ -6,25 +6,25 @@
   width: 100%;
   height: auto;
   background-color: rgba(var(--color-black-rgb), 0.5);
-  padding: 1rem;
+  padding: 0.625rem;
 }
 
 .form-update-user__score {
-  font-size: 2rem;
-  margin-bottom: 2rem;
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
   color: var(--color-white);
 }
 
 .form-update-user__input {
   width: 100%;
-  padding: 1rem;
-  margin-bottom: 2rem;
-  font-size: 1.5rem;
+  padding: 0.625rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9375rem;
   border: none;
   font-weight: 900;
   outline: none;
   background-color: transparent;
-  border: 0.1rem solid var(--color-white);
+  border: 0.0625rem solid var(--color-white);
   color: var(--color-white);
 }
 
@@ -35,12 +35,12 @@
 .form-update-user__submit {
   width: 100%;
   border: none;
-  padding: 1rem;
+  padding: 0.625rem;
   font-weight: 900;
   cursor: pointer;
   background-color: transparent;
   color: var(--color-white);
   cursor: pointer;
-  font-size: 2rem;
-  letter-spacing: 0.1rem;
+  font-size: 1.25rem;
+  letter-spacing: 0.0625rem;
 }

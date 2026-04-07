@@ -66,6 +66,7 @@ const FormRegisterUser = (): JSX.Element => {
       <input
         type="text"
         placeholder="Your username goes here"
+        aria-label="Username"
         value={formState.username}
         className="form-register-user__input"
         name="username"
@@ -76,6 +77,7 @@ const FormRegisterUser = (): JSX.Element => {
       <input
         type="password"
         placeholder="Your password goes here"
+        aria-label="Password"
         value={formState.password}
         className="form-register-user__input"
         name="password"
@@ -85,7 +87,7 @@ const FormRegisterUser = (): JSX.Element => {
       ></input>
       <button
         type="submit"
-        aria-label="send and register"
+        aria-label="Register new user"
         className="form-register-user__submit"
         disabled={alert.type === "alert-auth-error" || alert.type === "alert-auth-success"}
       >

@@ -9,7 +9,7 @@
 }
 
 .list-stats__title {
-  font-size: 3rem;
+  font-size: 1.875rem;
   text-align: center;
   color: var(--color-white);
 }
@@ -23,57 +23,57 @@
   height: auto;
   list-style: decimal;
   list-style-position: inside;
-  padding: 1rem;
+  padding: 0.625rem;
 }
 
 .list-stats__user {
-  font-size: 2.5rem;
+  font-size: 1.5625rem;
   font-weight: 900;
   color: var(--color-white);
-  margin-bottom: 1rem;
+  margin-bottom: 0.625rem;
 }
 
 @media only screen and (min-width: 280px) and (orientation: landscape) {
   .list-stats__title {
-    font-size: 2.5rem;
+    font-size: 1.5625rem;
   }
 
   .list-stats__user {
-    font-size: 2rem;
+    font-size: 1.25rem;
   }
 }
 
 @media only screen and (min-width: 540px) and (orientation: portrait) {
   .list-stats__title {
-    font-size: 4rem;
+    font-size: 2.5rem;
   }
 
   .list-stats__user {
-    font-size: 3rem;
+    font-size: 1.875rem;
   }
 }
 
 @media only screen and (min-width: 768px) and (orientation: portrait) {
   .list-stats__title {
-    font-size: 4rem;
+    font-size: 2.5rem;
   }
 
   .list-stats__user {
-    font-size: 3rem;
+    font-size: 1.875rem;
   }
 }
 
 @media only screen and (min-width: 1024px) {
   .list-stats {
-    height: 50rem;
-    width: 40rem;
+    height: 31.25rem;
+    width: 25rem;
   }
 
   .list-stats__title {
-    font-size: 3rem;
+    font-size: 1.875rem;
   }
 
   .list-stats__user {
-    font-size: 2.5rem;
+    font-size: 1.5625rem;
   }
 }

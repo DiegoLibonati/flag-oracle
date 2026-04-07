@@ -29,7 +29,9 @@ const FinishGamePage = (): JSX.Element => {
   return (
     <main className="finish-game-main">
       <section className="finish-game-page">
-        <h4 className={`alert ${parseAlertTypeFn()}`}>{alert.message}</h4>
+        <h4 role="alert" className={`alert ${parseAlertTypeFn()}`}>
+          {alert.message}
+        </h4>
         <article className="finish-game-page__wrapper-form finish-game-page__wrapper-register">
           <h2 className="finish-game-page__form-title">If you DONT have a user register</h2>
 

@@ -1,5 +1,5 @@
 .start-game-main {
-  padding-top: 5rem;
+  padding-top: 3.125rem;
   background-image: url("https://i.pinimg.com/originals/81/64/7e/81647eb1d13c460eb5d239ec09cdca69.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -14,13 +14,13 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: calc(100vh - 5rem);
+  height: calc(100vh - 3.125rem);
 }
 
 .start-game-page__btn-start {
-  width: 15rem;
-  padding: 1rem;
-  font-size: 2rem;
+  width: 9.375rem;
+  padding: 0.625rem;
+  font-size: 1.25rem;
   background-color: rgba(var(--color-black-rgb), 0.5);
   color: var(--color-white);
   cursor: pointer;

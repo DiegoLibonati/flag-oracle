@@ -1,20 +1,20 @@
 .flag {
-  width: calc(100% - 2rem);
+  width: calc(100% - 1.25rem);
   height: auto;
   object-fit: cover;
-  margin: 1rem;
+  margin: 0.625rem;
 }
 
 @media only screen and (min-width: 540px) {
   .flag {
-    width: 50rem;
+    width: 31.25rem;
   }
 }
 
 @media only screen and (min-width: 768px) {
   .flag {
-    height: 40rem;
-    width: 60rem;
+    height: 25rem;
+    width: 37.5rem;
     object-fit: cover;
   }
 }

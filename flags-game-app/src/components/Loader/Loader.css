@@ -1,6 +1,6 @@
 .loader {
   position: relative;
-  width: 10.8rem;
+  width: 6.75rem;
   height: 100%;
   margin: auto;
   display: flex;
@@ -11,10 +11,10 @@
 .loader::before {
   content: "";
   display: inline-block;
-  width: 4.8rem;
-  height: 4.8rem;
+  width: 3rem;
+  height: 3rem;
   background-color: #645dd7;
-  background-image: radial-gradient(circle 1.4rem, var(--color-black) 100%, transparent 0);
+  background-image: radial-gradient(circle 0.875rem, var(--color-black) 100%, transparent 0);
   background-repeat: no-repeat;
   border-radius: 50%;
   animation:
@@ -28,15 +28,15 @@
   }
   13%,
   40% {
-    background-position: -1.5rem 0;
+    background-position: -0.9375rem 0;
   }
   43%,
   70% {
-    background-position: 1.5rem 0;
+    background-position: 0.9375rem 0;
   }
   73%,
   90% {
-    background-position: 0 1.5rem;
+    background-position: 0 0.9375rem;
   }
   93%,
   100% {
@@ -59,7 +59,7 @@
   92%,
   98%,
   100% {
-    height: 4.8rem;
+    height: 3rem;
   }
   11%,
   21%,
@@ -68,6 +68,6 @@
   71%,
   91%,
   99% {
-    height: 1.8rem;
+    height: 1.125rem;
   }
 }

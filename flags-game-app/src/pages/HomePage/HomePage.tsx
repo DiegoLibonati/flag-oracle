@@ -46,7 +46,7 @@ const HomePage = (): JSX.Element => {
     <main className="home-main">
       <section className="home-page">
         <article className="home-page__actions">
-          <Link to="/menu" aria-label="lets play" className="home-page__play">
+          <Link to="/menu" aria-label="Let's play – go to game modes" className="home-page__play">
             ¡Lets PLAY!
           </Link>
         </article>

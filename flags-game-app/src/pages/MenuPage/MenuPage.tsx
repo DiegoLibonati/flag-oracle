@@ -51,7 +51,7 @@ const MenuPage = (): JSX.Element => {
 
   return (
     <main className="menu-main">
-      <Link to="/" aria-label="go home">
+      <Link to="/" aria-label="Go back to home">
         <BsChevronLeft id="go-back" className="icon-go-back"></BsChevronLeft>
       </Link>
 
@@ -64,7 +64,7 @@ const MenuPage = (): JSX.Element => {
                 key={mode._id}
                 to={`/menu/${mode._id}`}
                 className="menu-page__mode"
-                aria-label={`select ${mode.name} to play`}
+                aria-label={`Play ${mode.name} mode`}
               >
                 {mode.name} MODE
               </Link>

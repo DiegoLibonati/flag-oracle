@@ -10,7 +10,7 @@ const StartGamePage = (): JSX.Element => {
 
   return (
     <main className="start-game-main">
-      <Link to={`/menu/${idMode}`} aria-label="go home">
+      <Link to={`/menu/${idMode}`} aria-label="Go back to mode details">
         <BsChevronLeft id="go-back" className="icon-go-back"></BsChevronLeft>
       </Link>
 
@@ -18,7 +18,7 @@ const StartGamePage = (): JSX.Element => {
         <Link
           to={`/menu/${idMode}/game`}
           className="start-game-page__btn-start"
-          aria-label="start game"
+          aria-label="Start the game"
         >
           START GAME
         </Link>

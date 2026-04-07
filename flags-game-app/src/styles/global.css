@@ -11,7 +11,17 @@
 
   /* Typography */
   --font-family-primary: "Barlow", Helvetica, sans-serif;
-  --font-size-base: 10px;
+  --font-size-base: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
 }
 
 *,
@@ -62,9 +72,9 @@ a {
 
 .icon-go-back {
   position: absolute;
-  top: 7rem;
-  left: 0.5rem;
-  font-size: 3rem;
+  top: 4.375rem;
+  left: 0.3125rem;
+  font-size: 1.875rem;
   cursor: pointer;
   color: var(--color-white);
   font-weight: 900;

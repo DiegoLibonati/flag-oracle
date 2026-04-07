@@ -14,7 +14,7 @@ const Navbar = (): JSX.Element => {
   return (
     <header className="header-wrapper">
       <div className="header__logo">
-        <Link to="/" aria-label="title FlagsGame" className="header__title">
+        <Link to="/" aria-label="FlagsGame – go to home page" className="header__title">
           FlagsGame
         </Link>
 
@@ -26,7 +26,7 @@ const Navbar = (): JSX.Element => {
           <li className="header__nav-list-item">
             <NavLink
               to="/"
-              aria-label="home"
+              aria-label="Navigate to home page"
               className={({ isActive }) =>
                 isActive ? "header__nav-link header__nav-link--active" : "header__nav-link"
               }
@@ -37,7 +37,7 @@ const Navbar = (): JSX.Element => {
           <li className="header__nav-list-item">
             <NavLink
               to="/menu"
-              aria-label="menu"
+              aria-label="Navigate to menu page"
               className={({ isActive }) =>
                 isActive ? "header__nav-link header__nav-link--active" : "header__nav-link"
               }

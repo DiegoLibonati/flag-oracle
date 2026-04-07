@@ -72,13 +72,14 @@ const FormGuessFlag = ({ secondsLeft }: FormGuessFlagProps): JSX.Element => {
         type="text"
         value={formState.name}
         placeholder="Enter a Country Name..."
+        aria-label="Country name"
         onChange={(e) => {
           onInputChange(e);
         }}
         className="form-guess-flag__input"
         name="name"
       ></input>
-      <button type="submit" aria-label="submit guess" className="form-guess-flag__submit">
+      <button type="submit" aria-label="Submit flag guess" className="form-guess-flag__submit">
         SUBMIT
       </button>
     </form>
