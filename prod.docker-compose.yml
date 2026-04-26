@@ -1,33 +1,33 @@
 services:
-  flags-app:
+  flag-oracle-app:
     build:
-      context: ./flags-game-app
+      context: ./flag-oracle-app
       dockerfile: Dockerfile.production
     restart: always
     env_file:
-      - ./flags-game-app/.env
+      - ./flag-oracle-app/.env
     depends_on:
-      - flags-server
+      - flag-oracle-api
     ports:
       - "80:80"
     networks:
-      - flags-net
+      - flag-oracle-net
 
-  flags-server:
+  flag-oracle-api:
     build:
-      context: ./flags-server
+      context: ./flag-oracle-api
       dockerfile: Dockerfile.production
     restart: always
     env_file:
-      - ./flags-server/.env
+      - ./flag-oracle-api/.env
     depends_on:
-      - flags-db
+      - flag-oracle-db
     ports:
       - "5050:5050"
     networks:
-      - flags-net
+      - flag-oracle-net
 
-  flags-db:
+  flag-oracle-db:
     image: mongo:6
     restart: always
     environment:
@@ -37,12 +37,12 @@ services:
     volumes:
       - db-data:/data/db
     networks:
-      - flags-net
+      - flag-oracle-net
 
 volumes:
   db-data:
     driver: local
 
 networks:
-  flags-net:
+  flag-oracle-net:
     driver: bridge

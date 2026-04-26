@@ -1,4 +1,4 @@
-# FlagsGame
+# Flag Oracle
 
 ## Educational Purpose
 
@@ -9,7 +9,7 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 ## Getting Started
 
 1. Clone the repository with `git clone "repository link"`
-2. Join to `flags-game-app` folder and execute: `npm install` or `yarn install` in the terminal
+2. Join to `flag-oracle-app` folder and execute: `npm install` or `yarn install` in the terminal
 3. Go to the previous folder and execute: `docker-compose -f dev.docker-compose.yml build --no-cache` in the terminal
 4. Once built, you must execute the command: `docker-compose -f dev.docker-compose.yml up --force-recreate` in the terminal
 
@@ -17,14 +17,45 @@ NOTE: You have to be standing in the folder containing the: `dev.docker-compose.
 
 ### Pre-Commit for Development (Python)
 
-NOTE: Install **pre-commit** inside: `flags-server` folder.
+NOTE: Install **pre-commit** inside: `flag-oracle-api` folder.
 
 1. Once you're inside the virtual environment, let's install the hooks specified in the pre-commit. Execute: `pre-commit install`
 2. Now every time you try to commit, the pre-commit lint will run. If you want to do it manually, you can run the command: `pre-commit run --all-files`
 
 ## Description
 
-I made a web application with React JS and Flask for the api-rest, I used mongodb to save the information. In this web application you can play guess the flag, there are a total of 3 game modes among them we have normal, hard and hardcore mode. In each of them will appear 5 flags and depending on the game mode will have more or less time. In game modes with a higher difficulty the points multiplier will be higher, because every time you guess a flag you add points. In each game mode there is a ranking and there is also a global ranking of players that is governed by the amount of points they score.
+**Flag Oracle** is a full-stack web application built around a flag-guessing game. The goal is simple: you are shown a flag image and must type the correct country name before the timer runs out. Each game consists of exactly 5 flags drawn at random from the full database, so no two sessions play exactly the same.
+
+### Game Modes
+
+The game offers three difficulty modes, each with a different time limit per flag and a different score multiplier applied to every correct answer:
+
+- **Normal** — the most forgiving mode, with a generous timer and a base multiplier. Ideal for learning flags or warming up.
+- **Hard** — a tighter timer forces faster recall. The higher multiplier rewards players who can keep up the pace.
+- **Hardcore** — minimal time per flag and the highest multiplier. One wrong guess or a timeout burns through the clock fast; only players with strong flag knowledge will score well here.
+
+Choosing a harder mode is a deliberate risk/reward trade-off: the shorter window makes it easier to run out of time, but every correct answer is worth significantly more points.
+
+### Scoring and Rankings
+
+Points are calculated per correct answer and scaled by the mode's multiplier. At the end of each five-flag session the game shows a summary screen with your score and the correct answers for any flags you missed.
+
+Scores feed two independent ranking systems:
+
+- **Per-mode leaderboard** — the top ten scores recorded inside each specific mode (Normal, Hard, Hardcore).
+- **Global leaderboard** — the top ten players ranked by their cumulative score across all modes combined.
+
+### User System
+
+Players register with a username and password. The backend stores each user's best score per mode and their aggregate global score. Scores are updated automatically after every completed game session, so the leaderboards always reflect the latest results without any manual action from the player.
+
+### Architecture
+
+The frontend is a single-page application built with **React 19 + TypeScript**, using hash-based routing and the Context API for state management. All communication with the server goes through a thin service layer that calls the REST API via the native `fetch` API — no external HTTP libraries.
+
+The backend is a **Flask** REST API organized in a strict four-layer architecture (Blueprints → Controllers → Services → DAOs). Data is validated with **Pydantic v2** models at every boundary. **MongoDB** stores flags, modes, and users; the database is seeded automatically with the default flag catalogue and game modes on first startup.
+
+The entire stack runs in **Docker**: a development compose file spins up the Vite dev server (port 3000), the Flask API (port 5050), MongoDB (port 27017), and Mongo Express (port 8081) with a single command. A production compose file replaces the dev server with an **Nginx** static build and serves the Flask API through **Gunicorn**.
 
 ## Technologies used
 
@@ -122,11 +153,7 @@ pytest-xdist==3.5.0
 
 ## Portfolio Link
 
-[`https://www.diegolibonati.com.ar/#/project/FlagsGame`](https://www.diegolibonati.com.ar/#/project/FlagsGame)
-
-## Video
-
-https://user-images.githubusercontent.com/99032604/199865818-646e2a21-c6a4-42d6-976d-3b4861c5990c.mp4
+[`https://www.diegolibonati.com.ar/#/project/flag-oracle`](https://www.diegolibonati.com.ar/#/project/flag-oracle)
 
 ## Testing
 
@@ -143,7 +170,7 @@ npm run test:coverage
 
 ### Backend
 
-1. Join to the correct path of the clone and join to: `flags-server`
+1. Join to the correct path of the clone and join to: `flag-oracle-api`
 2. Execute: `python -m venv venv`
 3. Execute in Windows: `venv\Scripts\activate`
 4. Execute: `pip install -r requirements.txt`
@@ -215,7 +242,7 @@ VITE_API_URL=http://host.docker.internal:5050
 # Backend Envs
 TZ=America/Argentina/Buenos_Aires
 
-MONGO_HOST=flags-db
+MONGO_HOST=flag-oracle-db
 MONGO_PORT=27017
 MONGO_USER=admin
 MONGO_PASS=secret123

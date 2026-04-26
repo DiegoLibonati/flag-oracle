@@ -1,27 +1,27 @@
 #!/bin/sh
-# Pre-commit hook for FlagsGame monorepo.
-# Runs the Python pre-commit (ruff) when flags-server files are staged.
-# Runs husky/lint-staged when flags-game-app files are staged.
+# Pre-commit hook for Flag Oracle monorepo.
+# Runs the Python pre-commit (ruff) when flag-oracle-api files are staged.
+# Runs husky/lint-staged when flag-oracle-app files are staged.
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 STAGED_FILES=$(git diff --cached --name-only)
 
-API_FILES=$(echo "$STAGED_FILES" | grep "^flags-server/")
-APP_FILES=$(echo "$STAGED_FILES" | grep "^flags-game-app/")
+API_FILES=$(echo "$STAGED_FILES" | grep "^flag-oracle-api/")
+APP_FILES=$(echo "$STAGED_FILES" | grep "^flag-oracle-app/")
 
 EXIT_CODE=0
 
 if [ -n "$API_FILES" ]; then
-    echo "[pre-commit] Running ruff checks for flags-server..."
-    INSTALL_PYTHON="$REPO_ROOT/flags-server/venv/Scripts/python.exe"
+    echo "[pre-commit] Running ruff checks for flag-oracle-api..."
+    INSTALL_PYTHON="$REPO_ROOT/flag-oracle-api/venv/Scripts/python.exe"
     if [ -x "$INSTALL_PYTHON" ]; then
         "$INSTALL_PYTHON" -mpre_commit run \
-            --config="$REPO_ROOT/flags-server/.pre-commit-config.yaml" \
-            --hook-type=pre-commit
+            --config="$REPO_ROOT/flag-oracle-api/.pre-commit-config.yaml" \
+            --hook-stage=pre-commit
     elif command -v pre-commit > /dev/null; then
         pre-commit run \
-            --config="$REPO_ROOT/flags-server/.pre-commit-config.yaml" \
-            --hook-type=pre-commit
+            --config="$REPO_ROOT/flag-oracle-api/.pre-commit-config.yaml" \
+            --hook-stage=pre-commit
     else
         echo '[pre-commit] `pre-commit` not found. Did you forget to activate your virtualenv?' 1>&2
         exit 1
@@ -30,8 +30,8 @@ if [ -n "$API_FILES" ]; then
 fi
 
 if [ -n "$APP_FILES" ]; then
-    echo "[pre-commit] Running husky/lint-staged for flags-game-app..."
-    cd "$REPO_ROOT/flags-game-app" && sh .husky/pre-commit
+    echo "[pre-commit] Running husky/lint-staged for flag-oracle-app..."
+    cd "$REPO_ROOT/flag-oracle-app" && sh .husky/pre-commit
     EXIT_CODE=$((EXIT_CODE + $?))
 fi
 

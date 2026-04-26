@@ -1,39 +1,39 @@
 services:
-  flags-game-app:
+  flag-oracle-app:
     build:
-      context: ./flags-game-app
+      context: ./flag-oracle-app
       dockerfile: Dockerfile.development
     restart: always
     env_file:
-      - ./flags-game-app/.env
+      - ./flag-oracle-app/.env
     volumes:
-      - ./flags-game-app:/home/app
+      - ./flag-oracle-app:/home/app
       - /home/app/node_modules
     depends_on:
-      - flags-server
+      - flag-oracle-api
     ports:
       - "3000:3000"
     networks:
-     - flags-net
+     - flag-oracle-net
     tty: true
 
-  flags-server:
+  flag-oracle-api:
     build:
-      context: ./flags-server
+      context: ./flag-oracle-api
       dockerfile: Dockerfile.development
     restart: always
     env_file:
-      - ./flags-server/.env
+      - ./flag-oracle-api/.env
     volumes:
-      - "./flags-server:/home/app"
+      - "./flag-oracle-api:/home/app"
     depends_on:
-      - flags-db
+      - flag-oracle-db
     ports:
       - "5050:5050"
     networks:
-      - flags-net
+      - flag-oracle-net
 
-  flags-db:
+  flag-oracle-db:
     image: mongo
     restart: always
     ports:
@@ -45,7 +45,7 @@ services:
     volumes:
       - db-data:/data/db
     networks:
-      - flags-net
+      - flag-oracle-net
 
   mongo-express:
     image: mongo-express
@@ -53,18 +53,18 @@ services:
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://admin:secret123@flags-db:27017/flags?authSource=admin
+      ME_CONFIG_MONGODB_URL: mongodb://admin:secret123@flag-oracle-db:27017/flags?authSource=admin
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin123
     depends_on:
-      - flags-db
+      - flag-oracle-db
     networks:
-      - flags-net
+      - flag-oracle-net
 
 volumes:
   db-data:
     driver: local
 
 networks:
-  flags-net:
+  flag-oracle-net:
     driver: bridge
