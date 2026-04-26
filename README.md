@@ -253,7 +253,7 @@ HOST=0.0.0.0
 PORT=5050
 ```
 
-### **Flags Endpoints API**
+### **Flag Oracle Endpoints API**
 
 ---
 
