@@ -22,8 +22,8 @@ services:
       - ./flag-oracle-api/.env
     depends_on:
       - flag-oracle-db
-    ports:
-      - "5050:5050"
+    expose:
+      - "5050"
     networks:
       - flag-oracle-net
 
@@ -45,4 +45,5 @@ volumes:
 
 networks:
   flag-oracle-net:
+    name: flag-oracle-net
     driver: bridge
