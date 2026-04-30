@@ -21,14 +21,15 @@ services:
     env_file:
       - ./flag-oracle-api/.env
     depends_on:
-      - flag-oracle-db
+      flag-oracle-db:
+        condition: service_healthy
     expose:
       - "5050"
     networks:
       - flag-oracle-net
 
   flag-oracle-db:
-    image: mongo:6
+    image: mongo:7.0
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -36,6 +37,12 @@ services:
       MONGO_INITDB_DATABASE: flags
     volumes:
       - db-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - flag-oracle-net
 
