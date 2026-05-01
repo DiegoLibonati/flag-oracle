@@ -1,11 +1,9 @@
 import type { User, UserTop } from "@/types/app";
+import type { UserAdd, UserUpdate } from "@/types/payloads";
+import type { DefaultResponse, ResponseWithData } from "@/types/responses";
 
 const userService = {
-  getTopGeneral: async (): Promise<{
-    message: string;
-    code: string;
-    data: UserTop[];
-  }> => {
+  getTopGeneral: async (): Promise<ResponseWithData<UserTop[]>> => {
     const response = await fetch(`/api/v1/users/top_global`, {
       method: "GET",
       headers: {
@@ -15,22 +13,9 @@ const userService = {
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    return (await response.json()) as {
-      message: string;
-      code: string;
-      data: UserTop[];
-    };
+    return (await response.json()) as ResponseWithData<UserTop[]>;
   },
-  updateByUsername: async (
-    body: Pick<User, "username" | "password"> & {
-      score: number;
-      mode_id: string;
-    }
-  ): Promise<{
-    message: string;
-    code: string;
-    data: User;
-  }> => {
+  updateByUsername: async (body: UserUpdate): Promise<ResponseWithData<User>> => {
     const response = await fetch(`/api/v1/users/`, {
       method: "PATCH",
       body: JSON.stringify(body),
@@ -40,26 +25,13 @@ const userService = {
     });
 
     if (!response.ok) {
-      const error = (await response.json()) as { code: string; message: string };
+      const error = (await response.json()) as DefaultResponse;
       throw new Error(error.message);
     }
 
-    return (await response.json()) as {
-      message: string;
-      code: string;
-      data: User;
-    };
+    return (await response.json()) as ResponseWithData<User>;
   },
-  add: async (
-    body: Pick<User, "username" | "password"> & {
-      score: number;
-      mode_id: string;
-    }
-  ): Promise<{
-    message: string;
-    code: string;
-    data: User;
-  }> => {
+  add: async (body: UserAdd): Promise<ResponseWithData<User>> => {
     const response = await fetch(`/api/v1/users/`, {
       method: "POST",
       body: JSON.stringify(body),
@@ -69,15 +41,11 @@ const userService = {
     });
 
     if (!response.ok) {
-      const error = (await response.json()) as { code: string; message: string };
+      const error = (await response.json()) as DefaultResponse;
       throw new Error(error.message);
     }
 
-    return (await response.json()) as {
-      message: string;
-      code: string;
-      data: User;
-    };
+    return (await response.json()) as ResponseWithData<User>;
   },
 };
 

@@ -1,11 +1,8 @@
 import type { Mode, UserTop } from "@/types/app";
+import type { ResponseWithData } from "@/types/responses";
 
 const modeService = {
-  getAll: async (): Promise<{
-    message: string;
-    code: string;
-    data: Mode[];
-  }> => {
+  getAll: async (): Promise<ResponseWithData<Mode[]>> => {
     const response = await fetch(`/api/v1/modes/`, {
       method: "GET",
       headers: {
@@ -15,19 +12,9 @@ const modeService = {
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    return (await response.json()) as {
-      message: string;
-      code: string;
-      data: Mode[];
-    };
+    return (await response.json()) as ResponseWithData<Mode[]>;
   },
-  getById: async (
-    id: string
-  ): Promise<{
-    message: string;
-    code: string;
-    data: Mode;
-  }> => {
+  getById: async (id: string): Promise<ResponseWithData<Mode>> => {
     const response = await fetch(`/api/v1/modes/${id}`, {
       method: "GET",
       headers: {
@@ -37,28 +24,14 @@ const modeService = {
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    return (await response.json()) as {
-      message: string;
-      code: string;
-      data: Mode;
-    };
+    return (await response.json()) as ResponseWithData<Mode>;
   },
-  getTopMode: async (
-    idMode: string
-  ): Promise<{
-    message: string;
-    code: string;
-    data: UserTop[];
-  }> => {
+  getTopMode: async (idMode: string): Promise<ResponseWithData<UserTop[]>> => {
     const response = await fetch(`/api/v1/modes/${idMode}/top`);
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    return (await response.json()) as {
-      message: string;
-      code: string;
-      data: UserTop[];
-    };
+    return (await response.json()) as ResponseWithData<UserTop[]>;
   },
 };
 

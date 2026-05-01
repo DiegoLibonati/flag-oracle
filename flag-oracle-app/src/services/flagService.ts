@@ -1,11 +1,8 @@
 import type { Flag } from "@/types/app";
+import type { ResponseWithData } from "@/types/responses";
 
 const flagService = {
-  getAll: async (): Promise<{
-    message: string;
-    code: string;
-    data: Flag[];
-  }> => {
+  getAll: async (): Promise<ResponseWithData<Flag[]>> => {
     const response = await fetch(`/api/v1/flags/`, {
       method: "GET",
       headers: {
@@ -15,19 +12,9 @@ const flagService = {
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    return (await response.json()) as {
-      message: string;
-      code: string;
-      data: Flag[];
-    };
+    return (await response.json()) as ResponseWithData<Flag[]>;
   },
-  getRandoms: async (
-    quantity: number
-  ): Promise<{
-    message: string;
-    code: string;
-    data: Flag[];
-  }> => {
+  getRandoms: async (quantity: number): Promise<ResponseWithData<Flag[]>> => {
     const response = await fetch(`/api/v1/flags/random/${quantity}`, {
       method: "GET",
       headers: {
@@ -37,11 +24,7 @@ const flagService = {
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    return (await response.json()) as {
-      message: string;
-      code: string;
-      data: Flag[];
-    };
+    return (await response.json()) as ResponseWithData<Flag[]>;
   },
 };
 
