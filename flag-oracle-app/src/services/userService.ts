@@ -1,5 +1,5 @@
 import type { User, UserTop } from "@/types/app";
-import type { UserAdd, UserUpdate } from "@/types/payloads";
+import type { UserAddPayload, UserUpdatePayload } from "@/types/payloads";
 import type { DefaultResponse, ResponseWithData } from "@/types/responses";
 
 const userService = {
@@ -15,7 +15,7 @@ const userService = {
 
     return (await response.json()) as ResponseWithData<UserTop[]>;
   },
-  updateByUsername: async (body: UserUpdate): Promise<ResponseWithData<User>> => {
+  updateByUsername: async (body: UserUpdatePayload): Promise<ResponseWithData<User>> => {
     const response = await fetch(`/api/v1/users/`, {
       method: "PATCH",
       body: JSON.stringify(body),
@@ -31,7 +31,7 @@ const userService = {
 
     return (await response.json()) as ResponseWithData<User>;
   },
-  add: async (body: UserAdd): Promise<ResponseWithData<User>> => {
+  add: async (body: UserAddPayload): Promise<ResponseWithData<User>> => {
     const response = await fetch(`/api/v1/users/`, {
       method: "POST",
       body: JSON.stringify(body),
