@@ -1,5 +1,5 @@
 [project]
-name = "flag-oracle"
+name = "flag-oracle-api"
 version = "1.0.0"
 description = "Flag Oracle is a full-stack web application built around a flag-guessing game."
 requires-python = ">=3.11"
