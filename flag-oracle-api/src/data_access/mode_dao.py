@@ -16,7 +16,7 @@ class ModeDAO:
         return ModeDAO.parse_modes(list(mongo.db.modes.find()))
 
     @staticmethod
-    def find_one_by_id(_id: ObjectId) -> dict[str, Any] | None:
+    def find_one_by_id(_id: str) -> dict[str, Any] | None:
         return ModeDAO.parse_mode(mongo.db.modes.find_one({"_id": ObjectId(_id)}))
 
     @staticmethod
@@ -24,15 +24,15 @@ class ModeDAO:
         return ModeDAO.parse_mode(mongo.db.modes.find_one({"name": {"$regex": f"^{name}$", "$options": "i"}}))
 
     @staticmethod
-    def delete_one_by_id(_id: ObjectId) -> DeleteResult:
+    def delete_one_by_id(_id: str) -> DeleteResult:
         return mongo.db.modes.delete_one({"_id": ObjectId(_id)})
 
     @staticmethod
     def parse_modes(modes: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        return [ModeDAO.parse_mode(mode) for mode in modes]
+        return [parsed for mode in modes if (parsed := ModeDAO.parse_mode(mode)) is not None]
 
     @staticmethod
-    def parse_mode(mode: dict[str, Any]) -> dict[str, Any]:
+    def parse_mode(mode: dict[str, Any] | None) -> dict[str, Any] | None:
         if not mode:
             return None
 

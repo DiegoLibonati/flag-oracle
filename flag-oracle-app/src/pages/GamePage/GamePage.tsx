@@ -37,39 +37,47 @@ const GamePage = (): JSX.Element => {
     handleSetMode,
     handleStartFetchMode,
   } = useModeContext();
-  const { completeGuess, currentFlagToGuess, score, handleSetFlagToGuess } = useGameContext();
+  const { completeGuess, currentFlagToGuess, score, handleSetFlagToGuess, handleSetScore } =
+    useGameContext();
 
   const { timerText, secondsLeft, endTime, onCountdownReset } = useCountdown(mode.mode?.timeleft);
 
-  const handleGetRandomFlags = async (): Promise<void> => {
+  const handleGetRandomFlags = async (signal: AbortSignal): Promise<void> => {
     try {
       handleStartFetchFlags();
-      const response = await flagService.getRandoms(5);
+      const response = await flagService.getRandoms(5, signal);
+      if (signal.aborted) return;
       handleSetFlags(response.data);
     } catch (error) {
+      if (signal.aborted) return;
       handleSetErrorFlags(String(error));
     } finally {
-      handleEndFetchFlags();
+      if (!signal.aborted) handleEndFetchFlags();
     }
   };
 
-  const handleGetMode = async (): Promise<void> => {
+  const handleGetMode = async (signal: AbortSignal): Promise<void> => {
     try {
       handleStartFetchMode();
-      const response = await modeService.getById(idMode!);
+      const response = await modeService.getById(idMode!, signal);
+      if (signal.aborted) return;
       handleSetMode(response.data);
     } catch (error) {
+      if (signal.aborted) return;
       handleSetErrorMode(String(error));
     } finally {
-      handleEndFetchMode();
+      if (!signal.aborted) handleEndFetchMode();
     }
   };
 
   useEffect(() => {
-    void handleGetRandomFlags();
-    void handleGetMode();
+    const controller = new AbortController();
+    handleSetScore(0);
+    void handleGetRandomFlags(controller.signal);
+    void handleGetMode(controller.signal);
 
     return (): void => {
+      controller.abort();
       onCountdownReset();
       handleClearFlags();
       handleClearMode();

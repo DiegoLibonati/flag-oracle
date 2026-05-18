@@ -76,7 +76,9 @@ class TestGetTopUsers:
 
     @pytest.mark.unit
     def test_returns_at_most_ten_users(self) -> None:
-        users: list[dict[str, Any]] = [{"_id": str(i), "username": f"user{i}", "total_score": i, "scores": {"General": i}} for i in range(15)]
+        users: list[dict[str, Any]] = [
+            {"_id": str(i), "username": f"user{i}", "total_score": i, "scores": {"General": i}} for i in range(15)
+        ]
         with patch.object(UserService, "get_all_users", return_value=users):
             result: list[dict[str, Any]] = UserService.get_top_users("General")
         assert len(result) == 10

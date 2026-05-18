@@ -1,6 +1,5 @@
 from typing import Any
 
-from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
 from src.constants.codes import CODE_ALREADY_EXISTS_USER, CODE_NOT_FOUND_USER
@@ -29,20 +28,20 @@ class UserService:
         return UserDAO.find()
 
     @staticmethod
-    def get_user_by_username(username: str) -> list[dict[str, Any]]:
+    def get_user_by_username(username: str) -> dict[str, Any] | None:
         return UserDAO.find_one_by_username(username)
 
     @staticmethod
     def get_top_users(mode_name: str) -> list[dict[str, Any]]:
-        data = []
+        data: list[dict[str, Any]] = []
 
         for user in UserService.get_all_users():
             _id = user.get("_id")
             username = user.get("username")
             total_score = user.get("total_score")
-            scores = user.get("scores")
+            scores = user.get("scores") or {}
 
-            user_in_top = {}
+            user_in_top: dict[str, Any] = {}
 
             user_in_top["_id"] = str(_id)
             user_in_top["username"] = username
@@ -66,7 +65,7 @@ class UserService:
         return UserDAO.update_one_by_username(username, values)
 
     @staticmethod
-    def delete_user_by_id(_id: ObjectId) -> DeleteResult:
+    def delete_user_by_id(_id: str) -> DeleteResult:
         existing = UserDAO.find_one_by_id(_id)
 
         if not existing:

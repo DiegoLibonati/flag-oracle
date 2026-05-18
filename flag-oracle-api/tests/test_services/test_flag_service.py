@@ -22,7 +22,11 @@ class TestAddFlag:
     def test_raises_conflict_when_flag_name_already_exists(self) -> None:
         flag: FlagModel = FlagModel(name="Argentina", image="http://img.test/ar.png")
         with patch("src.services.flag_service.FlagDAO") as mock_dao:
-            mock_dao.find_one_by_name.return_value = {"name": "Argentina", "image": "http://img.test/ar.png", "_id": "123"}
+            mock_dao.find_one_by_name.return_value = {
+                "name": "Argentina",
+                "image": "http://img.test/ar.png",
+                "_id": "123",
+            }
             with pytest.raises(ConflictAPIError):
                 FlagService.add_flag(flag)
 

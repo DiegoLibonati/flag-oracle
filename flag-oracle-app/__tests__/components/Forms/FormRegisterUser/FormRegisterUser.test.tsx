@@ -9,19 +9,18 @@ import FormRegisterUser from "@/components/Forms/FormRegisterUser/FormRegisterUs
 import { AlertProvider } from "@/contexts/AlertContext/AlertProvider";
 import { GameProvider } from "@/contexts/GameContext/GameProvider";
 
-const mockFetchSuccess = (data: unknown): void => {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: true,
-    json: async () => await data,
-  } as Response);
-};
+import userService from "@/services/userService";
 
-const mockFetchErrorWithBody = (errorBody: unknown): void => {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: false,
-    json: async () => await errorBody,
-  } as Response);
-};
+const mockUserService = userService as jest.Mocked<typeof userService>;
+
+jest.mock("@/services/userService", () => ({
+  __esModule: true,
+  default: {
+    add: jest.fn(),
+    updateByUsername: jest.fn(),
+    getTopGeneral: jest.fn(),
+  },
+}));
 
 const renderComponent = (): RenderResult => {
   return render(
@@ -44,7 +43,7 @@ const renderComponent = (): RenderResult => {
 
 describe("FormRegisterUser", () => {
   describe("rendering", () => {
-    it("should render the score", () => {
+    it("should render the score as 0 initially", () => {
       renderComponent();
       expect(screen.getByText("Your score was: 0 PTS")).toBeInTheDocument();
     });
@@ -71,68 +70,112 @@ describe("FormRegisterUser", () => {
   });
 
   describe("behavior", () => {
-    it("should update username input when user types", async () => {
+    it("should update the username input when the user types", async () => {
       renderComponent();
       const user = userEvent.setup();
+
       const input = screen.getByRole("textbox", { name: "Username" });
       await user.type(input, "testuser");
+
       expect(input).toHaveValue("testuser");
     });
 
-    it("should update password input when user types", async () => {
+    it("should update the password input when the user types", async () => {
       renderComponent();
       const user = userEvent.setup();
+
       const passwordInput = screen.getByLabelText("Password");
       await user.type(passwordInput, "testpass");
+
       expect(passwordInput).toHaveValue("testpass");
     });
 
-    it("should call fetch with POST to /api/v1/users/ on submit", async () => {
-      mockFetchSuccess({ message: "User created", code: "S001", data: {} });
+    it("should call userService.add with the form payload on submit", async () => {
+      mockUserService.add.mockResolvedValue({
+        message: "User created",
+        code: "SUCCESS_ADD_USER",
+        data: {
+          _id: "1",
+          username: "testuser",
+          password: "hashed",
+          total_score: 0,
+          scores: {},
+        },
+      });
       renderComponent();
       const user = userEvent.setup();
+
       await user.type(screen.getByRole("textbox", { name: "Username" }), "testuser");
       await user.type(screen.getByLabelText("Password"), "testpass");
       await user.click(screen.getByRole("button", { name: "Register new user" }));
+
       await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith(
-          "/api/v1/users/",
-          expect.objectContaining({ method: "POST" })
-        );
+        expect(mockUserService.add).toHaveBeenCalledWith({
+          username: "testuser",
+          password: "testpass",
+          score: 0,
+          mode_id: "mode-123",
+        });
       });
     });
 
-    it("should disable the button after successful submit", async () => {
-      mockFetchSuccess({ message: "User created", code: "S001", data: {} });
+    it("should disable the submit button after a successful submit", async () => {
+      mockUserService.add.mockResolvedValue({
+        message: "User created",
+        code: "SUCCESS_ADD_USER",
+        data: {
+          _id: "1",
+          username: "testuser",
+          password: "hashed",
+          total_score: 0,
+          scores: {},
+        },
+      });
       renderComponent();
       const user = userEvent.setup();
+
       await user.type(screen.getByRole("textbox", { name: "Username" }), "testuser");
       await user.type(screen.getByLabelText("Password"), "testpass");
       await user.click(screen.getByRole("button", { name: "Register new user" }));
+
       await waitFor(() => {
         expect(screen.getByRole("button", { name: "Register new user" })).toBeDisabled();
       });
     });
 
-    it("should disable the button after a failed submit", async () => {
-      mockFetchErrorWithBody({ code: "CONFLICT", message: "Username already exists" });
+    it("should disable the submit button after a failed submit", async () => {
+      mockUserService.add.mockRejectedValue(new Error("Username already exists"));
       renderComponent();
       const user = userEvent.setup();
+
       await user.type(screen.getByRole("textbox", { name: "Username" }), "testuser");
       await user.type(screen.getByLabelText("Password"), "testpass");
       await user.click(screen.getByRole("button", { name: "Register new user" }));
+
       await waitFor(() => {
         expect(screen.getByRole("button", { name: "Register new user" })).toBeDisabled();
       });
     });
 
-    it("should reset form inputs after successful submit", async () => {
-      mockFetchSuccess({ message: "User created", code: "S001", data: {} });
+    it("should reset form inputs after a successful submit", async () => {
+      mockUserService.add.mockResolvedValue({
+        message: "User created",
+        code: "SUCCESS_ADD_USER",
+        data: {
+          _id: "1",
+          username: "testuser",
+          password: "hashed",
+          total_score: 0,
+          scores: {},
+        },
+      });
       renderComponent();
       const user = userEvent.setup();
+
       const usernameInput = screen.getByRole("textbox", { name: "Username" });
       await user.type(usernameInput, "testuser");
       await user.click(screen.getByRole("button", { name: "Register new user" }));
+
       await waitFor(() => {
         expect(usernameInput).toHaveValue("");
       });

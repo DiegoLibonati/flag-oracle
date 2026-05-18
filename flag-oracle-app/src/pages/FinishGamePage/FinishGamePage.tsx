@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 import type { JSX } from "react";
 
@@ -8,7 +8,6 @@ import FormUpdateUser from "@/components/Forms/FormUpdateUser/FormUpdateUser";
 import { parseAlertType } from "@/helpers/parseAlertType";
 
 import { useAlertContext } from "@/hooks/useAlertContext";
-import { useGameContext } from "@/hooks/useGameContext";
 
 import "@/pages/FinishGamePage/FinishGamePage.css";
 
@@ -16,15 +15,8 @@ import "@/pages/FinishGamePage/FinishGamePage.css";
 
 const FinishGamePage = (): JSX.Element => {
   const { alert } = useAlertContext();
-  const { handleSetScore } = useGameContext();
 
   const parseAlertTypeFn = useCallback(() => parseAlertType(alert.type), [alert.type]);
-
-  useEffect(() => {
-    return (): void => {
-      handleSetScore(0);
-    };
-  }, []);
 
   return (
     <main className="finish-game-main">

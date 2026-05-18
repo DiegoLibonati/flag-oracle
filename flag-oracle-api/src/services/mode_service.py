@@ -1,6 +1,5 @@
 from typing import Any
 
-from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult
 
 from src.constants.codes import CODE_ALREADY_EXISTS_MODE, CODE_NOT_FOUND_MODE
@@ -29,7 +28,7 @@ class ModeService:
         return ModeDAO.find()
 
     @staticmethod
-    def get_mode_by_id(_id: ObjectId) -> dict[str, Any] | None:
+    def get_mode_by_id(_id: str) -> dict[str, Any] | None:
         return ModeDAO.find_one_by_id(_id)
 
     @staticmethod
@@ -37,7 +36,7 @@ class ModeService:
         return ModeDAO.find_one_by_name(name)
 
     @staticmethod
-    def delete_mode_by_id(_id: ObjectId) -> DeleteResult:
+    def delete_mode_by_id(_id: str) -> DeleteResult:
         existing = ModeDAO.find_one_by_id(_id)
 
         if not existing:

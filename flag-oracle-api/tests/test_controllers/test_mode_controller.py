@@ -35,7 +35,9 @@ class TestGetModes:
 
     @pytest.mark.integration
     def test_returns_modes_when_data_exists(self, client, mongo_db: Database) -> None:
-        client.post("/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90})
+        client.post(
+            "/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90}
+        )
         response = client.get("/api/v1/modes/")
         assert response.status_code == 200
         data: dict[str, Any] = response.get_json()
@@ -46,7 +48,9 @@ class TestGetModes:
 class TestFindMode:
     @pytest.mark.integration
     def test_returns_200_when_mode_found(self, client, mongo_db: Database) -> None:
-        post_resp = client.post("/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90})
+        post_resp = client.post(
+            "/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90}
+        )
         mode_id: str = post_resp.get_json()["data"]["_id"]
         response = client.get(f"/api/v1/modes/{mode_id}")
         assert response.status_code == 200
@@ -66,7 +70,9 @@ class TestFindMode:
 class TestAddMode:
     @pytest.mark.integration
     def test_returns_201_for_valid_mode(self, client, mongo_db: Database) -> None:
-        response = client.post("/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90})
+        response = client.post(
+            "/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90}
+        )
         assert response.status_code == 201
         data: dict[str, Any] = response.get_json()
         assert data["code"] == "SUCCESS_ADD_MODE"
@@ -76,14 +82,18 @@ class TestAddMode:
     @pytest.mark.integration
     def test_returns_409_for_duplicate_mode(self, client, mongo_db: Database) -> None:
         client.post("/api/v1/modes/", json={"name": "Normal", "description": "desc", "multiplier": 10, "timeleft": 90})
-        response = client.post("/api/v1/modes/", json={"name": "Normal", "description": "desc", "multiplier": 10, "timeleft": 90})
+        response = client.post(
+            "/api/v1/modes/", json={"name": "Normal", "description": "desc", "multiplier": 10, "timeleft": 90}
+        )
         assert response.status_code == 409
         data: dict[str, Any] = response.get_json()
         assert data["code"] == "ALREADY_EXISTS_MODE"
 
     @pytest.mark.integration
     def test_returns_400_for_empty_name(self, client, mongo_db: Database) -> None:
-        response = client.post("/api/v1/modes/", json={"name": "", "description": "desc", "multiplier": 10, "timeleft": 90})
+        response = client.post(
+            "/api/v1/modes/", json={"name": "", "description": "desc", "multiplier": 10, "timeleft": 90}
+        )
         assert response.status_code == 400
 
     @pytest.mark.integration
@@ -95,7 +105,9 @@ class TestAddMode:
 class TestTopMode:
     @pytest.mark.integration
     def test_returns_200_with_empty_top(self, client, mongo_db: Database) -> None:
-        post_resp = client.post("/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90})
+        post_resp = client.post(
+            "/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90}
+        )
         mode_id: str = post_resp.get_json()["data"]["_id"]
         response = client.get(f"/api/v1/modes/{mode_id}/top")
         assert response.status_code == 200
@@ -113,7 +125,9 @@ class TestTopMode:
 class TestDeleteMode:
     @pytest.mark.integration
     def test_returns_200_when_mode_deleted(self, client, mongo_db: Database) -> None:
-        post_resp = client.post("/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90})
+        post_resp = client.post(
+            "/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90}
+        )
         mode_id: str = post_resp.get_json()["data"]["_id"]
         response = client.delete(f"/api/v1/modes/{mode_id}")
         assert response.status_code == 200
@@ -130,7 +144,9 @@ class TestDeleteMode:
 
     @pytest.mark.integration
     def test_mode_is_no_longer_returned_after_deletion(self, client, mongo_db: Database) -> None:
-        post_resp = client.post("/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90})
+        post_resp = client.post(
+            "/api/v1/modes/", json={"name": "Normal", "description": "Normal mode", "multiplier": 10, "timeleft": 90}
+        )
         mode_id: str = post_resp.get_json()["data"]["_id"]
         client.delete(f"/api/v1/modes/{mode_id}")
         get_resp = client.get("/api/v1/modes/")

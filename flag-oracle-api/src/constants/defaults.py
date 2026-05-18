@@ -1,4 +1,6 @@
-DEFAULT_MODES = [
+from typing import Any
+
+DEFAULT_MODES: list[dict[str, Any]] = [
     {
         "name": "Normal",
         "description": "You must guess the most available flags in 90 seconds.",
@@ -19,7 +21,7 @@ DEFAULT_MODES = [
     },
 ]
 
-DEFAULT_FLAGS = [
+DEFAULT_FLAGS: list[dict[str, Any]] = [
     {
         "name": "Argentina",
         "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVnagHgbpRUO82-sIOEi3TX1N3wUGSlRWKZQ&s",

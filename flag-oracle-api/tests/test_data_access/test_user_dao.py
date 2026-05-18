@@ -53,7 +53,9 @@ class TestFind:
     @pytest.mark.unit
     def test_returns_parsed_list_of_users(self) -> None:
         oid: ObjectId = ObjectId()
-        raw: list[dict[str, Any]] = [{"_id": oid, "username": "player1", "password": "h", "scores": {}, "total_score": 0}]
+        raw: list[dict[str, Any]] = [
+            {"_id": oid, "username": "player1", "password": "h", "scores": {}, "total_score": 0}
+        ]
         with patch("src.data_access.user_dao.mongo") as mock_mongo:
             mock_mongo.db.users.find.return_value = raw
             result: list[dict[str, Any]] = UserDAO.find()

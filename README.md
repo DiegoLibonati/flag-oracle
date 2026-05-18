@@ -89,20 +89,21 @@ Players register with a username and password. The backend stores each user's be
 "eslint-plugin-react-hooks": "^5.0.0"
 "eslint-plugin-react-refresh": "^0.4.0"
 "globals": "^15.0.0"
-"husky": "^9.0.0"
 "jest": "^30.3.0"
 "jest-environment-jsdom": "^30.3.0"
 "lint-staged": "^15.0.0"
+"msw": "2.10.4"
 "prettier": "^3.0.0"
 "ts-jest": "^29.4.6"
 "typescript": "^5.2.2"
 "typescript-eslint": "^8.0.0"
+"undici": "^7.25.0"
 "vite": "^7.1.6"
 ```
 
 ### Backend
 
-#### requirements.txt
+#### Runtime (`[project.dependencies]`)
 
 ```
 flask==3.1.3
@@ -112,18 +113,19 @@ werkzeug==3.1.6
 gunicorn==23.0.0
 ```
 
-#### requirements.dev.txt
+#### Dev (`[project.optional-dependencies]` dev)
 
 ```
 pre-commit==4.3.0
 pip-audit==2.7.3
 ruff==0.11.12
+mypy==1.13.0
 ```
 
-#### requirements.test.txt
+#### Test (`[project.optional-dependencies]` test)
 
 ```
-pytest==8.4.2
+pytest==9.0.3
 pytest-env==1.1.5
 pytest-cov==4.1.0
 pytest-timeout==2.3.1
@@ -136,26 +138,36 @@ These steps prepare a local working copy. The stack itself runs through Docker �
 
 1. Clone the repository: `git clone "repository link"`.
 2. Install the frontend dependencies — from `flag-oracle-app/` run `npm install` (or `yarn install`).
-3. Set up the backend virtual environment — from `flag-oracle-api/`:
+3. Set up the backend virtual environment — from `flag-oracle-api/`. Dependencies are declared in `pyproject.toml`; the `requirements*.txt` files are thin pointers (`-e .`, `-e .[dev]`, `-e .[test]`) kept for tooling that still expects them:
 
    ```bash
    python -m venv venv
    venv\Scripts\activate            # Windows
    # source venv/bin/activate       # macOS/Linux
-   pip install -r requirements.txt
-   pip install -r requirements.dev.txt
-   pip install -r requirements.test.txt
+   pip install -e ".[dev,test]"
    ```
 
 4. Create the `.env` files for both `flag-oracle-app/` and `flag-oracle-api/` using the variables documented in the [Env Keys](#env-keys) section. Without them the containers will fail to start with missing-config errors.
 5. Install **Docker Desktop** (required on Windows). With everything in place, jump to [Production → Development](#development) to launch the stack.
 
-### Pre-Commit for Development (Python)
+### Pre-Commit (Monorepo)
 
-NOTE: Install **pre-commit** inside the `flag-oracle-api` folder.
+The repository uses a **single git hook at `.githooks/pre-commit`** that orchestrates both sub-projects based on which files are staged:
 
-1. With the virtual environment activated, install the hooks declared in the pre-commit config: `pre-commit install`.
-2. The hooks now run automatically on every commit. To run them manually: `pre-commit run --all-files`.
+- When `flag-oracle-api/` files are staged → runs `ruff` (via `pre-commit`) and `mypy` against the backend.
+- When `flag-oracle-app/` files are staged → runs `lint-staged` (ESLint + Prettier) inside the frontend.
+
+The hook becomes active once `core.hooksPath` is pointed at `.githooks/`. Running `npm install` inside `flag-oracle-app/` performs this configuration automatically via the `prepare` script. To do it manually:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+To trigger the checks without committing, run the hook directly:
+
+```bash
+sh .githooks/pre-commit
+```
 
 ## Env Keys
 
@@ -171,6 +183,8 @@ The application reads its configuration from `.env` files. Below is the referenc
 8. `MONGO_AUTH_SOURCE`: Database where the user credentials are verified. Typically `admin` when the user was created there.
 9. `HOST`: Network interface the backend API binds to (e.g. `0.0.0.0` to allow external connections).
 10. `PORT`: Port on which the backend API is exposed.
+11. `MAX_CONTENT_LENGTH`: Maximum allowed request body size in bytes. Defaults to `1048576` (1 MB).
+12. `SEED_DEFAULT_DATA`: When `true`, seeds MongoDB with the default flag catalogue and game modes on first startup. Enabled in development, disabled in production.
 
 ```ts
 # Frontend Envs
@@ -190,6 +204,8 @@ MONGO_AUTH_SOURCE=admin
 
 HOST=0.0.0.0
 PORT=5050
+MAX_CONTENT_LENGTH=1048576
+SEED_DEFAULT_DATA=false
 ```
 
 ## Architecture & Design Patterns
@@ -206,13 +222,21 @@ The entire stack runs in **Docker**: a development compose file spins up the Vit
 
 ```ts
 APP VERSION: 0.0.1
-README UPDATED: 02/02/2026
+README UPDATED: 18/05/2026
 AUTHOR: Diego Libonati
 ```
 
 ### Flag Oracle Endpoints
 
 The backend exposes the following REST endpoints (all mounted under `/api/v1/`).
+
+---
+
+- **Endpoint Name**: Health Check
+- **Endpoint Method**: GET
+- **Endpoint Prefix**: /api/v1/health/
+- **Endpoint Fn**: Liveness probe used by Docker `HEALTHCHECK` and external monitors. Returns 200 when the application is up.
+- **Endpoint Params**: None
 
 ---
 
@@ -413,6 +437,111 @@ The backend tests reuse the virtual environment created during [Getting Started]
 2. Activate the virtual environment (`venv\Scripts\activate` on Windows).
 3. Execute: `pytest --log-cli-level=INFO`.
 
+### Type checking (Frontend)
+
+Run the TypeScript compiler in `--noEmit` mode to verify there are no type errors without producing a build:
+
+```bash
+npm run type-check
+```
+
+## Continuous Integration
+
+The repository ships with a **GitHub Actions** pipeline defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It runs automatically on every `push` and `pull_request` targeting the `main` branch and validates the backend, the frontend, and all Docker images that ship the stack.
+
+### Pipeline overview
+
+```
+                  ┌─── PR or push to main ───┐
+                  ▼                          ▼
+┌──────────────────────────┐  ┌──────────────────────────┐
+│  backend-lint-and-audit  │─▶│       backend-test       │
+│  ruff · mypy · pip-audit │  │      pytest -v -ra       │
+└──────────────────────────┘  └──────────────────────────┘
+                                          │
+                                          ▼
+┌──────────────────────────┐  ┌──────────────────────────┐  ┌──────────────────┐
+│ frontend-lint-and-audit  │─▶│      frontend-test       │─▶│  frontend-build  │
+│ eslint · tsc · npm audit │  │     jest --verbose       │  │   tsc + vite     │
+└──────────────────────────┘  └──────────────────────────┘  └──────────────────┘
+                                                                     │
+                                                                     ▼
+                                                  ┌──────────────────────────────────┐
+                                                  │           docker-build           │
+                                                  │  api:dev · api:prod ·            │
+                                                  │  app:dev · app:prod (matrix x4)  │
+                                                  └──────────────────────────────────┘
+```
+
+### Backend jobs
+
+1. **`backend-lint-and-audit`** — runs from `flag-oracle-api/` after `pip install -e ".[dev]"`. Executes `ruff check .`, `ruff format --check .`, `mypy --config-file=pyproject.toml .`, and `pip-audit --skip-editable` with a curated list of `--ignore-vuln` flags for known and accepted advisories.
+2. **`backend-test`** — installs the test extras (`pip install -e ".[test]"`) and runs `python -m pytest --tb=short`. The Mongo test container is launched by the `conftest.py` autouse fixture, so no extra service is wired in the workflow.
+
+### Frontend jobs
+
+3. **`frontend-lint-and-audit`** — runs from `flag-oracle-app/` after `npm ci --ignore-scripts`. Executes `npm run lint` (ESLint), `npm run type-check` (TypeScript `--noEmit`), and `npm audit --audit-level=high` (advisory, not fatal).
+4. **`frontend-test`** — runs `npm run test`, which invokes Jest with the MSW + jsdom setup configured in `__tests__/jest.setup.ts`.
+5. **`frontend-build`** — runs `npm run build` (`tsc -p tsconfig.app.json && vite build`) to verify the production bundle compiles.
+
+### Docker jobs
+
+6. **`docker-build`** — a parallel matrix of four images, each gated by `frontend-build`:
+
+   | Project | Dockerfile | Tag |
+   |---|---|---|
+   | `flag-oracle-api` | `Dockerfile.development` | `flag-oracle-api:dev` |
+   | `flag-oracle-api` | `Dockerfile.production`  | `flag-oracle-api:prod` |
+   | `flag-oracle-app` | `Dockerfile.development` | `flag-oracle-app:dev` |
+   | `flag-oracle-app` | `Dockerfile.production`  | `flag-oracle-app:prod` |
+
+   Images are built with `docker/build-push-action@v6` and **not pushed** — this is a smoke test that the Dockerfiles still produce a valid image with the current code.
+
+### Pinning
+
+- **Python**: `flag-oracle-api/.python-version` (3.11) is consumed by `actions/setup-python`.
+- **Node.js**: `flag-oracle-app/.nvmrc` (22) is consumed by `actions/setup-node`.
+- **Pip cache**: keyed off `flag-oracle-api/pyproject.toml`.
+- **npm cache**: keyed off `flag-oracle-app/package-lock.json`.
+
+### Running the same checks locally
+
+```bash
+# backend-lint-and-audit (from flag-oracle-api/, venv activated)
+ruff check .
+ruff format --check .
+mypy --config-file=pyproject.toml .
+pip-audit --skip-editable
+
+# backend-test
+python -m pytest --tb=short
+
+# frontend-lint-and-audit (from flag-oracle-app/)
+npm run lint
+npm run type-check
+npm audit --audit-level=high
+
+# frontend-test
+npm run test
+
+# frontend-build
+npm run build
+
+# docker-build (from repo root)
+docker build -f flag-oracle-api/Dockerfile.development -t flag-oracle-api:dev flag-oracle-api
+docker build -f flag-oracle-api/Dockerfile.production  -t flag-oracle-api:prod flag-oracle-api
+docker build -f flag-oracle-app/Dockerfile.development -t flag-oracle-app:dev flag-oracle-app
+docker build -f flag-oracle-app/Dockerfile.production  -t flag-oracle-app:prod flag-oracle-app
+```
+
+### Skipping a CI run
+
+To push a change to `main` without triggering the workflow (for example, a doc-only commit you have already validated), append `[skip ci]` to the commit message — this is GitHub's native marker and skips the entire pipeline.
+
+```bash
+git commit -m "docs: fix typo in README [skip ci]"
+```
+
 ## Security Audit
 
 Run a vulnerability scan against both sub-projects before any release.
@@ -423,8 +552,8 @@ Check Python dependencies for known vulnerabilities using **pip-audit**.
 
 1. Go to the `flag-oracle-api/` folder.
 2. Activate the virtual environment.
-3. Execute: `pip install -r requirements.dev.txt`.
-4. Execute: `pip-audit -r requirements.txt`.
+3. Execute: `pip install -e ".[dev]"`.
+4. Execute: `pip-audit --skip-editable`.
 
 ### Frontend
 

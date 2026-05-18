@@ -1,4 +1,5 @@
-from flask import Response, jsonify, request
+from flask import jsonify, request
+from flask.typing import ResponseReturnValue
 
 from src.constants.codes import (
     CODE_NOT_VALID_INTEGER,
@@ -15,12 +16,12 @@ from src.constants.messages import (
 from src.models.flag_model import FlagModel
 from src.services.flag_service import FlagService
 from src.utils.exceptions import ValidationAPIError
-from src.utils.exceptions_handler import exceptions_handler
+from src.utils.exceptions_decorator import exceptions_decorator
 from src.utils.helpers import is_positive_integer
 
 
-@exceptions_handler
-def alive() -> Response:
+@exceptions_decorator
+def alive() -> ResponseReturnValue:
     response = {
         "message": "I am Alive!",
         "version_bp": "2.0.0",
@@ -31,8 +32,8 @@ def alive() -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def flags() -> Response:
+@exceptions_decorator
+def flags() -> ResponseReturnValue:
     flags = FlagService.get_all_flags()
 
     response = {
@@ -44,8 +45,8 @@ def flags() -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def add_flag() -> Response:
+@exceptions_decorator
+def add_flag() -> ResponseReturnValue:
     body = request.json
     flag = FlagModel(**body)
 
@@ -62,17 +63,15 @@ def add_flag() -> Response:
     return jsonify(response), 201
 
 
-@exceptions_handler
-def get_random_flags(quantity: str) -> Response:
+@exceptions_decorator
+def get_random_flags(quantity: str) -> ResponseReturnValue:
     if not is_positive_integer(quantity):
         raise ValidationAPIError(
             code=CODE_NOT_VALID_INTEGER,
             message=MESSAGE_NOT_VALID_INTEGER,
         )
 
-    quantity = int(quantity)
-
-    flags = FlagService.get_random_flags(quantity)
+    flags = FlagService.get_random_flags(int(quantity))
 
     response = {
         "code": CODE_SUCCESS_GET_ALL_FLAGS,
@@ -83,8 +82,8 @@ def get_random_flags(quantity: str) -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def delete_flag(id: str) -> Response:
+@exceptions_decorator
+def delete_flag(id: str) -> ResponseReturnValue:
     FlagService.delete_flag_by_id(id)
 
     response = {

@@ -1,4 +1,6 @@
 # ##### SUCCESS #####
+MESSAGE_SUCCESS_HEALTH = "The application is healthy."
+MESSAGE_SUCCESS_READY = "The application is ready to serve requests."
 MESSAGE_SUCCESS_ADD_FLAG = "The flag was successfully added."
 MESSAGE_SUCCESS_GET_ALL_FLAGS = "Flags were successfully obtained."
 MESSAGE_SUCCESS_DELETE_FLAG = "Flag was successfully deleted."
@@ -33,6 +35,7 @@ MESSAGE_ALREADY_EXISTS_MODE = "Mode already exists."
 MESSAGE_ALREADY_EXISTS_USER = "User already exists."
 
 # ##### NOT_FOUND #####
+MESSAGE_NOT_FOUND_ROUTE = "The requested route does not exist."
 MESSAGE_NOT_FOUND_FLAG = "No flag found."
 MESSAGE_NOT_FOUND_MODE = "No mode found."
 MESSAGE_NOT_FOUND_USER = "No user found."

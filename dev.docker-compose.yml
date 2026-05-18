@@ -27,6 +27,10 @@ services:
       - ./flag-oracle-api/.env
     volumes:
       - ./flag-oracle-api:/home/app
+      - /home/app/venv
+      - /home/app/.pytest_cache
+      - /home/app/.ruff_cache
+      - /home/app/__pycache__
     depends_on:
       - flag-oracle-db
     ports:

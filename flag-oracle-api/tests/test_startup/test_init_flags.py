@@ -10,7 +10,9 @@ class TestAddDefaultFlags:
     @pytest.mark.unit
     def test_does_not_insert_when_flags_already_exist(self) -> None:
         with patch("src.startup.init_flags.FlagService") as mock_service:
-            mock_service.get_all_flags.return_value = [{"name": "existing", "image": "http://img.test/ex.png", "_id": "1"}]
+            mock_service.get_all_flags.return_value = [
+                {"name": "existing", "image": "http://img.test/ex.png", "_id": "1"}
+            ]
             add_default_flags()
         mock_service.add_flag.assert_not_called()
 

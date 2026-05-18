@@ -9,7 +9,7 @@ import prettierConfig from "eslint-config-prettier";
 export default [
   // Archivos ignorados
   {
-    ignores: ["dist/**", "node_modules/**", "coverage/**"],
+    ignores: ["dist/**", "node_modules/**", "coverage/**", "*.config.js", "vite.config.ts"],
   },
 
   // Reglas base de JS
@@ -46,10 +46,7 @@ export default [
     rules: {
       // React
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
 
       // Prettier como regla de ESLint
       "prettier/prettier": "error",
@@ -62,10 +59,7 @@ export default [
       ],
       "@typescript-eslint/restrict-template-expressions": "off",
       "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        { prefer: "type-imports" },
-      ],
+      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
       "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
       "@typescript-eslint/no-non-null-assertion": "off",
 
@@ -88,11 +82,7 @@ export default [
 
   // Tests (reglas más permisivas)
   {
-    files: [
-      "**/__tests__/**/*.{ts,tsx}",
-      "**/*.test.{ts,tsx}",
-      "**/*.spec.{ts,tsx}",
-    ],
+    files: ["**/__tests__/**/*.{ts,tsx}", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
     languageOptions: {
       globals: {
         ...globals.jest,

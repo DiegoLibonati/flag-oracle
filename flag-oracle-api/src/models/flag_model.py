@@ -1,10 +1,8 @@
-from typing import Annotated
-
-from pydantic import BaseModel, StringConstraints
-
-ConstrainedStr = Annotated[str, StringConstraints(min_length=1, strip_whitespace=True)]
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class FlagModel(BaseModel):
-    name: ConstrainedStr
-    image: ConstrainedStr
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    name: str = Field(..., min_length=1)
+    image: str = Field(..., min_length=1)

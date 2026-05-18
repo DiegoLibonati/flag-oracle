@@ -5,6 +5,16 @@ from src.constants import codes
 
 class TestSuccessCodes:
     @pytest.mark.unit
+    def test_health_code_exists_and_is_string(self) -> None:
+        assert isinstance(codes.CODE_SUCCESS_HEALTH, str)
+        assert codes.CODE_SUCCESS_HEALTH != ""
+
+    @pytest.mark.unit
+    def test_ready_code_exists_and_is_string(self) -> None:
+        assert isinstance(codes.CODE_SUCCESS_READY, str)
+        assert codes.CODE_SUCCESS_READY != ""
+
+    @pytest.mark.unit
     def test_add_flag_code_exists_and_is_string(self) -> None:
         assert isinstance(codes.CODE_SUCCESS_ADD_FLAG, str)
         assert codes.CODE_SUCCESS_ADD_FLAG != ""
@@ -72,8 +82,18 @@ class TestErrorCodes:
     def test_authentication_error_code_exists(self) -> None:
         assert isinstance(codes.CODE_ERROR_AUTHENTICATION, str)
 
+    @pytest.mark.unit
+    def test_generic_error_code_exists(self) -> None:
+        assert isinstance(codes.CODE_ERROR_GENERIC, str)
+        assert codes.CODE_ERROR_GENERIC != ""
+
 
 class TestNotFoundCodes:
+    @pytest.mark.unit
+    def test_not_found_route_code_exists(self) -> None:
+        assert isinstance(codes.CODE_NOT_FOUND_ROUTE, str)
+        assert codes.CODE_NOT_FOUND_ROUTE != ""
+
     @pytest.mark.unit
     def test_not_found_flag_code_exists(self) -> None:
         assert isinstance(codes.CODE_NOT_FOUND_FLAG, str)
@@ -111,6 +131,8 @@ class TestCodeUniqueness:
     @pytest.mark.unit
     def test_all_success_codes_are_unique(self) -> None:
         success_codes: list[str] = [
+            codes.CODE_SUCCESS_HEALTH,
+            codes.CODE_SUCCESS_READY,
             codes.CODE_SUCCESS_ADD_FLAG,
             codes.CODE_SUCCESS_GET_ALL_FLAGS,
             codes.CODE_SUCCESS_DELETE_FLAG,
@@ -129,6 +151,7 @@ class TestCodeUniqueness:
     @pytest.mark.unit
     def test_not_found_codes_are_unique(self) -> None:
         not_found_codes: list[str] = [
+            codes.CODE_NOT_FOUND_ROUTE,
             codes.CODE_NOT_FOUND_FLAG,
             codes.CODE_NOT_FOUND_MODE,
             codes.CODE_NOT_FOUND_USER,

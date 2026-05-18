@@ -3,11 +3,19 @@ from flask import Blueprint, Flask
 
 from src.blueprints.routes import register_routes
 from src.blueprints.v1.flag_bp import flag_bp
+from src.blueprints.v1.health_bp import health_bp
 from src.blueprints.v1.mode_bp import mode_bp
 from src.blueprints.v1.user_bp import user_bp
 
 
 class TestRegisterRoutes:
+    @pytest.mark.unit
+    def test_registers_health_blueprint_at_v1_prefix(self) -> None:
+        app: Flask = Flask(__name__)
+        register_routes(app)
+        rules: list[str] = [str(rule) for rule in app.url_map.iter_rules()]
+        assert any(rule.startswith("/api/v1/health") for rule in rules)
+
     @pytest.mark.unit
     def test_registers_flags_blueprint_at_v1_prefix(self) -> None:
         app: Flask = Flask(__name__)
@@ -30,13 +38,33 @@ class TestRegisterRoutes:
         assert any(rule.startswith("/api/v1/users") for rule in rules)
 
     @pytest.mark.unit
-    def test_all_three_blueprints_are_registered(self) -> None:
+    def test_all_blueprints_are_registered(self) -> None:
         app: Flask = Flask(__name__)
         register_routes(app)
         rules: list[str] = [str(rule) for rule in app.url_map.iter_rules()]
-        prefixes: list[str] = ["/api/v1/flags", "/api/v1/modes", "/api/v1/users"]
+        prefixes: list[str] = ["/api/v1/health", "/api/v1/flags", "/api/v1/modes", "/api/v1/users"]
         for prefix in prefixes:
             assert any(rule.startswith(prefix) for rule in rules)
+
+
+class TestHealthBlueprint:
+    @pytest.mark.unit
+    def test_health_bp_is_blueprint_instance(self) -> None:
+        assert isinstance(health_bp, Blueprint)
+
+    @pytest.mark.unit
+    def test_health_bp_registers_root_route(self) -> None:
+        app: Flask = Flask(__name__)
+        app.register_blueprint(health_bp, url_prefix="/api/v1/health")
+        rules: list[str] = [str(rule) for rule in app.url_map.iter_rules()]
+        assert "/api/v1/health/" in rules
+
+    @pytest.mark.unit
+    def test_health_bp_root_route_supports_get(self) -> None:
+        app: Flask = Flask(__name__)
+        app.register_blueprint(health_bp, url_prefix="/api/v1/health")
+        methods_by_rule: dict[str, set[str]] = {str(rule): rule.methods for rule in app.url_map.iter_rules()}
+        assert "GET" in methods_by_rule.get("/api/v1/health/", set())
 
 
 class TestFlagBlueprint:

@@ -12,7 +12,7 @@ export const GameProvider = ({ children }: GameProviderProps): JSX.Element => {
   const [score, setScore] = useState(0);
 
   const handleNextFlagToGuess = (flags: Flag[]): void => {
-    const indexOfFlag = flags.indexOf(currentFlagToGuess!);
+    const indexOfFlag = flags.findIndex((flag) => flag._id === currentFlagToGuess?._id);
     const newIndexFlag = indexOfFlag + 1;
 
     if (newIndexFlag === flags.length) {

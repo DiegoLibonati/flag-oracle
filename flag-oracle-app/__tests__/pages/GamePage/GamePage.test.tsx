@@ -9,20 +9,43 @@ import { FlagsProvider } from "@/contexts/FlagsContext/FlagsProvider";
 import { GameProvider } from "@/contexts/GameContext/GameProvider";
 import { ModeProvider } from "@/contexts/ModeContext/ModeProvider";
 
+import flagService from "@/services/flagService";
+import modeService from "@/services/modeService";
+
 import { mockFlags } from "@tests/__mocks__/flags.mock";
 import { mockMode } from "@tests/__mocks__/modes.mock";
 
-const mockFetchBoth = (): void => {
-  global.fetch = jest
-    .fn()
-    .mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({ message: "ok", code: "S001", data: mockFlags }),
-    } as Response)
-    .mockResolvedValueOnce({
-      ok: true,
-      json: () => Promise.resolve({ message: "ok", code: "S001", data: mockMode }),
-    } as Response);
+const mockFlagService = flagService as jest.Mocked<typeof flagService>;
+const mockModeService = modeService as jest.Mocked<typeof modeService>;
+
+jest.mock("@/services/flagService", () => ({
+  __esModule: true,
+  default: {
+    getAll: jest.fn(),
+    getRandoms: jest.fn(),
+  },
+}));
+
+jest.mock("@/services/modeService", () => ({
+  __esModule: true,
+  default: {
+    getAll: jest.fn(),
+    getById: jest.fn(),
+    getTopMode: jest.fn(),
+  },
+}));
+
+const setupSuccessfulFetches = (): void => {
+  mockFlagService.getRandoms.mockResolvedValue({
+    message: "ok",
+    code: "SUCCESS_GET_ALL_FLAGS",
+    data: mockFlags,
+  });
+  mockModeService.getById.mockResolvedValue({
+    message: "ok",
+    code: "SUCCESS_GET_MODE",
+    data: mockMode,
+  });
 };
 
 const renderComponent = (idMode = mockMode._id): RenderResult => {
@@ -49,52 +72,64 @@ const renderComponent = (idMode = mockMode._id): RenderResult => {
 describe("GamePage", () => {
   describe("rendering", () => {
     it("should show a loader while fetching data", () => {
-      global.fetch = jest.fn().mockReturnValue(
+      mockFlagService.getRandoms.mockReturnValue(
         new Promise(() => {
-          // Empty fn
+          return;
         })
       );
-      renderComponent();
-      expect(screen.getByText("", { selector: "span.loader" })).toBeInTheDocument();
+      mockModeService.getById.mockReturnValue(
+        new Promise(() => {
+          return;
+        })
+      );
+      const { container } = renderComponent();
+
+      expect(container.querySelector<HTMLSpanElement>("span.loader")).toBeInTheDocument();
     });
 
     it("should render the GUESS THE FLAG heading after loading", async () => {
-      mockFetchBoth();
+      setupSuccessfulFetches();
       renderComponent();
+
       expect(await screen.findByRole("heading", { name: "GUESS THE FLAG" })).toBeInTheDocument();
     });
 
     it("should render the flag image after loading", async () => {
-      mockFetchBoth();
+      setupSuccessfulFetches();
       renderComponent();
+
       await screen.findByRole("heading", { name: "GUESS THE FLAG" });
       expect(screen.getByRole("img", { name: mockFlags[0]!.name })).toBeInTheDocument();
     });
 
     it("should render the guess flag input after loading", async () => {
-      mockFetchBoth();
+      setupSuccessfulFetches();
       renderComponent();
+
       await screen.findByRole("heading", { name: "GUESS THE FLAG" });
       expect(screen.getByRole("textbox", { name: "Country name" })).toBeInTheDocument();
     });
 
     it("should render the score display after loading", async () => {
-      mockFetchBoth();
+      setupSuccessfulFetches();
       renderComponent();
+
       await screen.findByRole("heading", { name: "GUESS THE FLAG" });
       expect(screen.getByText(/Score: 0 PTS/)).toBeInTheDocument();
     });
 
     it("should render the timer display after loading", async () => {
-      mockFetchBoth();
+      setupSuccessfulFetches();
       renderComponent();
+
       await screen.findByRole("heading", { name: "GUESS THE FLAG" });
       expect(screen.getByText(/Time left:/)).toBeInTheDocument();
     });
 
     it("should render the flag with src from the first random flag", async () => {
-      mockFetchBoth();
+      setupSuccessfulFetches();
       renderComponent();
+
       await screen.findByRole("heading", { name: "GUESS THE FLAG" });
       const img = screen.getByRole("img");
       expect(img).toHaveAttribute("src", mockFlags[0]!.image);

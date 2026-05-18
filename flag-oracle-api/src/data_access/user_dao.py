@@ -16,7 +16,7 @@ class UserDAO:
         return UserDAO.parse_users(list(mongo.db.users.find()))
 
     @staticmethod
-    def find_one_by_id(_id: ObjectId) -> dict[str, Any] | None:
+    def find_one_by_id(_id: str) -> dict[str, Any] | None:
         return UserDAO.parse_user(mongo.db.users.find_one({"_id": ObjectId(_id)}))
 
     @staticmethod
@@ -28,15 +28,15 @@ class UserDAO:
         return mongo.db.users.update_one({"username": username}, {"$set": values})
 
     @staticmethod
-    def delete_one_by_id(_id: ObjectId) -> DeleteResult:
+    def delete_one_by_id(_id: str) -> DeleteResult:
         return mongo.db.users.delete_one({"_id": ObjectId(_id)})
 
     @staticmethod
     def parse_users(users: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        return [UserDAO.parse_user(user) for user in users]
+        return [parsed for user in users if (parsed := UserDAO.parse_user(user)) is not None]
 
     @staticmethod
-    def parse_user(user: dict[str, Any]) -> dict[str, Any]:
+    def parse_user(user: dict[str, Any] | None) -> dict[str, Any] | None:
         if not user:
             return None
 

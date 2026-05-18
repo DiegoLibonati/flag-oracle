@@ -1,6 +1,5 @@
 from typing import Any
 
-from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult
 
 from src.constants.codes import CODE_ALREADY_EXISTS_FLAG, CODE_NOT_FOUND_FLAG
@@ -33,7 +32,7 @@ class FlagService:
         return FlagDAO.find_random(quantity)
 
     @staticmethod
-    def delete_flag_by_id(_id: ObjectId) -> DeleteResult:
+    def delete_flag_by_id(_id: str) -> DeleteResult:
         existing = FlagDAO.find_one_by_id(_id)
 
         if not existing:

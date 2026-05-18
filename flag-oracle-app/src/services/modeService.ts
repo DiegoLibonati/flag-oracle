@@ -14,12 +14,13 @@ const modeService = {
 
     return (await response.json()) as ResponseWithData<Mode[]>;
   },
-  getById: async (id: string): Promise<ResponseWithData<Mode>> => {
+  getById: async (id: string, signal?: AbortSignal): Promise<ResponseWithData<Mode>> => {
     const response = await fetch(`/api/v1/modes/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
+      signal: signal ?? null,
     });
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);

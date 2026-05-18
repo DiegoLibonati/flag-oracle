@@ -14,12 +14,13 @@ const flagService = {
 
     return (await response.json()) as ResponseWithData<Flag[]>;
   },
-  getRandoms: async (quantity: number): Promise<ResponseWithData<Flag[]>> => {
+  getRandoms: async (quantity: number, signal?: AbortSignal): Promise<ResponseWithData<Flag[]>> => {
     const response = await fetch(`/api/v1/flags/random/${quantity}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
+      signal: signal ?? null,
     });
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);

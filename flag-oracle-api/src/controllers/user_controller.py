@@ -1,6 +1,7 @@
 from functools import reduce
 
-from flask import Response, jsonify, request
+from flask import jsonify, request
+from flask.typing import ResponseReturnValue
 
 from src.constants.codes import (
     CODE_ERROR_AUTHENTICATION,
@@ -25,11 +26,11 @@ from src.services.encrypt_service import EncryptService
 from src.services.mode_service import ModeService
 from src.services.user_service import UserService
 from src.utils.exceptions import AuthenticationAPIError, NotFoundAPIError
-from src.utils.exceptions_handler import exceptions_handler
+from src.utils.exceptions_decorator import exceptions_decorator
 
 
-@exceptions_handler
-def alive() -> Response:
+@exceptions_decorator
+def alive() -> ResponseReturnValue:
     response = {
         "message": "I am Alive!",
         "version_bp": "2.0.0",
@@ -40,8 +41,8 @@ def alive() -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def top_general() -> Response:
+@exceptions_decorator
+def top_general() -> ResponseReturnValue:
     users = UserService.get_top_users("General")
 
     response = {
@@ -53,8 +54,8 @@ def top_general() -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def add_user() -> Response:
+@exceptions_decorator
+def add_user() -> ResponseReturnValue:
     body = request.json
 
     mode_id = body.get("mode_id", "").strip()
@@ -92,8 +93,8 @@ def add_user() -> Response:
     return jsonify(response), 201
 
 
-@exceptions_handler
-def modify_user() -> Response:
+@exceptions_decorator
+def modify_user() -> ResponseReturnValue:
     body = request.json
 
     mode_id = body.get("mode_id", "").strip()
@@ -119,16 +120,22 @@ def modify_user() -> Response:
 
     user["scores"][mode_name] = score_actual
 
-    if mode_name not in user["scores"].keys():
+    if mode_name not in user["scores"]:
         user["scores"]["General"] = user["scores"]["General"] + score_actual
     else:
         user["scores"]["General"] = reduce(lambda a, b: a + b, user["scores"].values()) - user["scores"]["General"]
 
     user["total_score"] = user["scores"]["General"]
 
-    UserService.update_user_scores_by_username(user["username"], {"scores": user["scores"], "total_score": user["total_score"]})
+    UserService.update_user_scores_by_username(
+        user["username"], {"scores": user["scores"], "total_score": user["total_score"]}
+    )
 
     user = UserService.get_user_by_username(username)
+
+    if not user:
+        raise NotFoundAPIError(code=CODE_NOT_FOUND_USER, message=MESSAGE_NOT_FOUND_USER)
+
     del user["password"]
 
     response = {
@@ -140,8 +147,8 @@ def modify_user() -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def delete_user(id: str) -> Response:
+@exceptions_decorator
+def delete_user(id: str) -> ResponseReturnValue:
     UserService.delete_user_by_id(id)
 
     response = {

@@ -1,4 +1,5 @@
-from flask import Response, jsonify, request
+from flask import jsonify, request
+from flask.typing import ResponseReturnValue
 
 from src.constants.codes import (
     CODE_NOT_FOUND_MODE,
@@ -20,11 +21,11 @@ from src.models.mode_model import ModeModel
 from src.services.mode_service import ModeService
 from src.services.user_service import UserService
 from src.utils.exceptions import NotFoundAPIError
-from src.utils.exceptions_handler import exceptions_handler
+from src.utils.exceptions_decorator import exceptions_decorator
 
 
-@exceptions_handler
-def alive() -> Response:
+@exceptions_decorator
+def alive() -> ResponseReturnValue:
     response = {
         "message": "I am Alive!",
         "version_bp": "2.0.0",
@@ -35,8 +36,8 @@ def alive() -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def get_modes() -> Response:
+@exceptions_decorator
+def get_modes() -> ResponseReturnValue:
     modes = ModeService.get_all_modes()
 
     response = {
@@ -48,8 +49,8 @@ def get_modes() -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def find_mode(id: str) -> Response:
+@exceptions_decorator
+def find_mode(id: str) -> ResponseReturnValue:
     mode = ModeService.get_mode_by_id(id)
 
     if not mode:
@@ -64,8 +65,8 @@ def find_mode(id: str) -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def add_mode() -> Response:
+@exceptions_decorator
+def add_mode() -> ResponseReturnValue:
     body = request.json
     mode = ModeModel(**body)
 
@@ -82,8 +83,8 @@ def add_mode() -> Response:
     return jsonify(response), 201
 
 
-@exceptions_handler
-def top_mode(id: str) -> Response:
+@exceptions_decorator
+def top_mode(id: str) -> ResponseReturnValue:
     mode = ModeService.get_mode_by_id(id)
 
     if not mode:
@@ -100,8 +101,8 @@ def top_mode(id: str) -> Response:
     return jsonify(response), 200
 
 
-@exceptions_handler
-def delete_mode(id: str) -> Response:
+@exceptions_decorator
+def delete_mode(id: str) -> ResponseReturnValue:
     ModeService.delete_mode_by_id(id)
 
     response = {

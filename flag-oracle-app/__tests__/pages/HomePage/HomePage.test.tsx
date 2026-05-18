@@ -7,21 +7,20 @@ import HomePage from "@/pages/HomePage/HomePage";
 
 import { UsersProvider } from "@/contexts/UsersContext/UsersProvider";
 
+import userService from "@/services/userService";
+
 import { mockUsersTop } from "@tests/__mocks__/usersTop.mock";
 
-const mockFetchSuccess = (data: unknown): void => {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: true,
-    json: async () => await data,
-  } as Response);
-};
+const mockUserService = userService as jest.Mocked<typeof userService>;
 
-const mockFetchError = (): void => {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: false,
-    status: 500,
-  } as Response);
-};
+jest.mock("@/services/userService", () => ({
+  __esModule: true,
+  default: {
+    add: jest.fn(),
+    updateByUsername: jest.fn(),
+    getTopGeneral: jest.fn(),
+  },
+}));
 
 const renderComponent = (): RenderResult => {
   return render(
@@ -36,47 +35,69 @@ const renderComponent = (): RenderResult => {
 describe("HomePage", () => {
   describe("rendering", () => {
     it("should render the play link", async () => {
-      mockFetchSuccess({ message: "ok", code: "S001", data: [] });
+      mockUserService.getTopGeneral.mockResolvedValue({
+        message: "ok",
+        code: "SUCCESS_GET_GLOBAL_TOP_USER",
+        data: [],
+      });
       renderComponent();
+
       expect(
         await screen.findByRole("link", { name: "Let's play – go to game modes" })
       ).toBeInTheDocument();
     });
 
     it("should show a loader while fetching users", () => {
-      global.fetch = jest.fn().mockReturnValue(
+      mockUserService.getTopGeneral.mockReturnValue(
         new Promise(() => {
-          // Empty fn
+          return;
         })
       );
-      renderComponent();
-      expect(screen.getByText("", { selector: "span.loader" })).toBeInTheDocument();
+      const { container } = renderComponent();
+
+      expect(container.querySelector<HTMLSpanElement>("span.loader")).toBeInTheDocument();
     });
 
     it("should show the global top users list after loading", async () => {
-      mockFetchSuccess({ message: "ok", code: "S001", data: mockUsersTop });
+      mockUserService.getTopGeneral.mockResolvedValue({
+        message: "ok",
+        code: "SUCCESS_GET_GLOBAL_TOP_USER",
+        data: mockUsersTop,
+      });
       renderComponent();
+
       expect(await screen.findByRole("heading", { name: "GLOBAL TOP USERS" })).toBeInTheDocument();
     });
 
     it("should render user stats after loading", async () => {
-      mockFetchSuccess({ message: "ok", code: "S001", data: mockUsersTop });
+      mockUserService.getTopGeneral.mockResolvedValue({
+        message: "ok",
+        code: "SUCCESS_GET_GLOBAL_TOP_USER",
+        data: mockUsersTop,
+      });
       renderComponent();
+
       expect(await screen.findByText(/TITO with 6925 PTS/)).toBeInTheDocument();
     });
 
     it("should render an empty list when no users are returned", async () => {
-      mockFetchSuccess({ message: "ok", code: "S001", data: [] });
+      mockUserService.getTopGeneral.mockResolvedValue({
+        message: "ok",
+        code: "SUCCESS_GET_GLOBAL_TOP_USER",
+        data: [],
+      });
       renderComponent();
+
       await screen.findByRole("heading", { name: "GLOBAL TOP USERS" });
       expect(screen.getByRole("list").children).toHaveLength(0);
     });
   });
 
   describe("error handling", () => {
-    it("should show the list after a failed fetch (with no users)", async () => {
-      mockFetchError();
+    it("should show an empty users list when the service rejects", async () => {
+      mockUserService.getTopGeneral.mockRejectedValue(new Error("HTTP error! status: 500"));
       renderComponent();
+
       expect(await screen.findByRole("heading", { name: "GLOBAL TOP USERS" })).toBeInTheDocument();
       expect(screen.getByRole("list").children).toHaveLength(0);
     });

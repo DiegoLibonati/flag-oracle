@@ -5,6 +5,16 @@ from src.constants import messages
 
 class TestSuccessMessages:
     @pytest.mark.unit
+    def test_health_message_is_non_empty_string(self) -> None:
+        assert isinstance(messages.MESSAGE_SUCCESS_HEALTH, str)
+        assert messages.MESSAGE_SUCCESS_HEALTH != ""
+
+    @pytest.mark.unit
+    def test_ready_message_is_non_empty_string(self) -> None:
+        assert isinstance(messages.MESSAGE_SUCCESS_READY, str)
+        assert messages.MESSAGE_SUCCESS_READY != ""
+
+    @pytest.mark.unit
     def test_add_flag_message_is_non_empty_string(self) -> None:
         assert isinstance(messages.MESSAGE_SUCCESS_ADD_FLAG, str)
         assert messages.MESSAGE_SUCCESS_ADD_FLAG != ""
@@ -57,8 +67,18 @@ class TestErrorMessages:
     def test_authentication_error_message_is_non_empty_string(self) -> None:
         assert isinstance(messages.MESSAGE_ERROR_AUTHENTICATION, str)
 
+    @pytest.mark.unit
+    def test_generic_error_message_is_non_empty_string(self) -> None:
+        assert isinstance(messages.MESSAGE_ERROR_GENERIC, str)
+        assert messages.MESSAGE_ERROR_GENERIC != ""
+
 
 class TestNotFoundMessages:
+    @pytest.mark.unit
+    def test_not_found_route_message_is_non_empty_string(self) -> None:
+        assert isinstance(messages.MESSAGE_NOT_FOUND_ROUTE, str)
+        assert messages.MESSAGE_NOT_FOUND_ROUTE != ""
+
     @pytest.mark.unit
     def test_not_found_flag_message_is_non_empty_string(self) -> None:
         assert isinstance(messages.MESSAGE_NOT_FOUND_FLAG, str)
