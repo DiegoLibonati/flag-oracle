@@ -116,7 +116,6 @@ gunicorn==23.0.0
 #### Dev (`[project.optional-dependencies]` dev)
 
 ```
-pre-commit==4.3.0
 pip-audit==2.7.3
 ruff==0.11.12
 mypy==1.13.0
@@ -154,7 +153,7 @@ These steps prepare a local working copy. The stack itself runs through Docker �
 
 The repository uses a **single git hook at `.githooks/pre-commit`** that orchestrates both sub-projects based on which files are staged:
 
-- When `flag-oracle-api/` files are staged → runs `ruff` (via `pre-commit`) and `mypy` against the backend.
+- When `flag-oracle-api/` files are staged → runs `ruff` (lint + format) and `mypy` against the backend, invoked directly from the `flag-oracle-api/venv/` interpreter.
 - When `flag-oracle-app/` files are staged → runs `lint-staged` (ESLint + Prettier) inside the frontend.
 
 The hook becomes active once `core.hooksPath` is pointed at `.githooks/`. Running `npm install` inside `flag-oracle-app/` performs this configuration automatically via the `prepare` script. To do it manually:

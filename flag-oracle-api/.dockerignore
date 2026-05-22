@@ -20,9 +20,6 @@ env/
 # Tests
 tests/
 
-# Dev tooling
-.pre-commit-config.yaml
-
 # Git
 .git/
 .gitignore

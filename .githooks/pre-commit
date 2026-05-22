@@ -1,10 +1,10 @@
 #!/bin/sh
 # Pre-commit hook for Flag Oracle monorepo.
-# Runs ruff (via pre-commit) and mypy when flag-oracle-api files are staged.
+# Runs ruff and mypy when flag-oracle-api files are staged.
 # Runs lint-staged (eslint + prettier) when flag-oracle-app files are staged.
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-STAGED_FILES=$(git diff --cached --name-only)
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
 
 API_FILES=$(echo "$STAGED_FILES" | grep "^flag-oracle-api/")
 APP_FILES=$(echo "$STAGED_FILES" | grep "^flag-oracle-app/")
@@ -12,31 +12,29 @@ APP_FILES=$(echo "$STAGED_FILES" | grep "^flag-oracle-app/")
 EXIT_CODE=0
 
 if [ -n "$API_FILES" ]; then
-    INSTALL_PYTHON="$REPO_ROOT/flag-oracle-api/venv/Scripts/python.exe"
+    API_DIR="$REPO_ROOT/flag-oracle-api"
 
-    echo "[pre-commit] Running ruff for flag-oracle-api..."
-    if [ -x "$INSTALL_PYTHON" ]; then
-        "$INSTALL_PYTHON" -mpre_commit run \
-            --config="$REPO_ROOT/flag-oracle-api/.pre-commit-config.yaml" \
-            --hook-stage=pre-commit
-    elif command -v pre-commit > /dev/null; then
-        pre-commit run \
-            --config="$REPO_ROOT/flag-oracle-api/.pre-commit-config.yaml" \
-            --hook-stage=pre-commit
+    if [ -x "$API_DIR/venv/Scripts/python.exe" ]; then
+        PYTHON="$API_DIR/venv/Scripts/python.exe"
+    elif [ -x "$API_DIR/venv/bin/python" ]; then
+        PYTHON="$API_DIR/venv/bin/python"
     else
-        echo '[pre-commit] `pre-commit` not found. Did you forget to activate your virtualenv?' 1>&2
+        echo '[pre-commit] venv python not found at flag-oracle-api/venv/. Create it with `python -m venv venv` and `pip install -e ".[dev]"`.' 1>&2
         exit 1
     fi
+
+    echo "[pre-commit] Running ruff check for flag-oracle-api..."
+    "$PYTHON" -m ruff check --fix "$API_DIR"
+    EXIT_CODE=$((EXIT_CODE + $?))
+
+    echo "[pre-commit] Running ruff format for flag-oracle-api..."
+    "$PYTHON" -m ruff format "$API_DIR"
     EXIT_CODE=$((EXIT_CODE + $?))
 
     echo "[pre-commit] Running mypy for flag-oracle-api..."
-    if [ -x "$INSTALL_PYTHON" ]; then
-        "$INSTALL_PYTHON" -m mypy \
-            --config-file="$REPO_ROOT/flag-oracle-api/pyproject.toml" \
-            "$REPO_ROOT/flag-oracle-api"
-    else
-        echo '[pre-commit] venv python not found, skipping mypy.' 1>&2
-    fi
+    "$PYTHON" -m mypy \
+        --config-file="$API_DIR/pyproject.toml" \
+        "$API_DIR"
     EXIT_CODE=$((EXIT_CODE + $?))
 fi
 
