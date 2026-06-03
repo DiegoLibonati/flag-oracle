@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import { BsChevronLeft } from "react-icons/bs";
 
 import type { JSX } from "react";

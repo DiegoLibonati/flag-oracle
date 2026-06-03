@@ -1,5 +1,5 @@
 import { Fragment } from "react/jsx-runtime";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 
 import type { JSX } from "react";
 

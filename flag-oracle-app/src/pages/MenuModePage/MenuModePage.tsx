@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { BsChevronLeft } from "react-icons/bs";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 
 import type { JSX } from "react";
 

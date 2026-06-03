@@ -66,7 +66,7 @@ Players register with a username and password. The backend stores each user's be
 ```
 "react": "^19.2.4"
 "react-dom": "^19.2.4"
-"react-router-dom": "7.13.2"
+"react-router": "7.16.0"
 "react-icons": "^4.4.0"
 ```
 
