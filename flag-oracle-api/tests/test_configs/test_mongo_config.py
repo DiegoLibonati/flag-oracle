@@ -45,14 +45,14 @@ class TestMongoClass:
         mock_client_class.assert_called_once_with(mongo_uri, serverSelectionTimeoutMS=5000)
 
     @pytest.mark.unit
-    def test_init_app_pings_admin_to_verify_connection(self) -> None:
+    def test_init_app_does_not_ping_the_server(self) -> None:
         instance: Mongo = Mongo()
         mock_app = MagicMock()
         mock_app.config = {"MONGO_URI": "mongodb://localhost:27017/x", "MONGO_DB_NAME": "x"}
         mock_client = MagicMock()
         with patch("src.configs.mongo_config.MongoClient", return_value=mock_client):
             instance.init_app(mock_app)
-        mock_client.admin.command.assert_called_once_with("ping")
+        mock_client.admin.command.assert_not_called()
 
     @pytest.mark.unit
     def test_init_app_uses_db_name_from_config(self) -> None:

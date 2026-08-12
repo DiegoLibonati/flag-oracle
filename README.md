@@ -149,6 +149,19 @@ These steps prepare a local working copy. The stack itself runs through Docker �
 4. Create the `.env` files for both `flag-oracle-app/` and `flag-oracle-api/` using the variables documented in the [Env Keys](#env-keys) section. Without them the containers will fail to start with missing-config errors.
 5. Install **Docker Desktop** (required on Windows). With everything in place, jump to [Production → Development](#development) to launch the stack.
 
+### Running the Backend Without Docker
+
+The backend can also run directly on the host. `flag-oracle-api/.env` is loaded automatically via `python-dotenv`, so the same file works with or without Docker — just remember that `MONGO_HOST=flag-oracle-db` only resolves inside the compose network; point it at `localhost` (or wherever MongoDB actually runs) when running on the host:
+
+```bash
+cd flag-oracle-api
+venv\Scripts\activate            # Windows
+# source venv/bin/activate       # macOS/Linux
+python app.py                    # Dev server on the PORT defined in .env (default 5050)
+```
+
+The API is then available at `http://localhost:5050/api/v1/health/`. If MongoDB is not reachable, the app still boots — see [Startup Connection Checks](#startup-connection-checks).
+
 ### Pre-Commit (Monorepo)
 
 The repository uses a **single git hook at `.githooks/pre-commit`** that orchestrates both sub-projects based on which files are staged:
@@ -171,6 +184,13 @@ sh .githooks/pre-commit
 ## Env Keys
 
 The application reads its configuration from `.env` files. Below is the reference for every variable consumed by the frontend and the backend.
+
+The backend honors `.env` through two load paths:
+
+- **With Docker**: the compose files inject `.env` through `env_file`, so the values arrive as real environment variables.
+- **Without Docker**: `load_dotenv()` runs at import time in `src/configs/default_config.py` (used by both `python app.py` and `wsgi.py`) and in `src/configs/gunicorn_config.py` (gunicorn loads that file without going through Flask config).
+
+Precedence is always: **real environment variables > `.env` values > coded defaults**. `load_dotenv()` never overrides variables that are already set, so exported variables (and CI environments, which have no `.env`) win over the file.
 
 1. `TZ`: Timezone setting for the container.
 2. `VITE_API_URL`: Base URL of the backend API the frontend consumes.
@@ -214,6 +234,10 @@ The frontend is a single-page application built with **React 19 + TypeScript**, 
 The backend is a **Flask** REST API organized in a strict four-layer architecture (Blueprints → Controllers → Services → DAOs). Data is validated with **Pydantic v2** models at every boundary. **MongoDB** stores flags, modes, and users; the database is seeded automatically with the default flag catalogue and game modes on first startup.
 
 The entire stack runs in **Docker**: a development compose file spins up the Vite dev server (port 3000), the Flask API (port 5050), MongoDB (port 27017), and Mongo Express (port 8081) with a single command. A production compose file replaces the dev server with an **Nginx** static build and serves the Flask API through **Gunicorn**.
+
+### Startup Connection Checks
+
+On boot, `create_app` verifies the MongoDB connection (`src/startup/check_connections.py`): up to **5 attempts**, **2 seconds** apart, each a lightweight `ping` with a **3-second** connection timeout. Each failed attempt logs a warning (`MongoDB connection attempt X/5 failed.`); after the fifth failure a final warning states that the app will continue running with MongoDB-dependent features unavailable. The app **never fails to boot** because MongoDB is down — a fully unreachable database delays startup by ~25 seconds at most. The check is gated by the `CHECK_CONNECTIONS` config flag (`True` by default, `False` in `TestingConfig` so the test suite performs no real network calls or sleeps).
 
 ## Documentation API
 

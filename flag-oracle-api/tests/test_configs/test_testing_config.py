@@ -34,3 +34,7 @@ class TestTestingConfig:
     @pytest.mark.unit
     def test_seed_default_data_inherits_false(self) -> None:
         assert TestingConfig.SEED_DEFAULT_DATA is False
+
+    @pytest.mark.unit
+    def test_check_connections_is_false(self) -> None:
+        assert TestingConfig.CHECK_CONNECTIONS is False

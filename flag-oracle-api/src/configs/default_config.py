@@ -1,5 +1,9 @@
 import os
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class DefaultConfig:
     # General
@@ -26,3 +30,4 @@ class DefaultConfig:
     DEBUG = False
     TESTING = False
     SEED_DEFAULT_DATA = False
+    CHECK_CONNECTIONS = True

@@ -79,6 +79,10 @@ class TestDefaultConfigAttributes:
     def test_seed_default_data_is_false_by_default(self) -> None:
         assert DefaultConfig.SEED_DEFAULT_DATA is False
 
+    @pytest.mark.unit
+    def test_check_connections_is_true_by_default(self) -> None:
+        assert DefaultConfig.CHECK_CONNECTIONS is True
+
 
 class TestDefaultConfigPytestEnvValues:
     @pytest.mark.unit

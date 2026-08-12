@@ -25,9 +25,6 @@ class Mongo:
         self.client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
         self._db = self.client[db_name]
 
-        self.client.admin.command("ping")
-        logger.info("MongoDB connection verified.")
-
 
 mongo = Mongo()
 

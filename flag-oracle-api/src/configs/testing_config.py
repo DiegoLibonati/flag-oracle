@@ -10,3 +10,4 @@ class TestingConfig(DefaultConfig):
     TESTING = True
     DEBUG = True
     ENV = "testing"
+    CHECK_CONNECTIONS = False
